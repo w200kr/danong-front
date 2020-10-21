@@ -9,7 +9,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import AuthRoute from "contexts/Auth/AuthRoute.js";
 import AuthProvider from "contexts/Auth/AuthProvider.js"
 
-import PageIndex from "containers/PageIndex/PageIndex.js"
+// import PageIndex from "containers/PageIndex/PageIndex.js"
+import PageSearch from "domains/product/Search"
+import PageDetail from "domains/product/Detail"
 import PageLogin from 'domains/account/Login'
 import PageSignUp from 'domains/account/SignUp'
 
@@ -28,9 +30,10 @@ ReactDOM.render(
     <Router>
       <AuthProvider>
         <Switch>
-          <Route exact path="/" component={PageIndex} />
+          <Route exact path="/" component={PageSearch} />
           <Route path="/login" component={PageLogin} />
           <Route path="/signup" component={PageSignUp} />
+          <Route path="/:productId" component={PageDetail} />
         </Switch>
       </AuthProvider>
     </Router>
