@@ -67,11 +67,11 @@ const signupPageStyle = {
   //   lineHeight: "41px",
   //   fontSize: "20px"
   // },
-  // divider: {
-  //   marginTop: "10px",
+  divider: {
+    marginTop: "10px",
   //   marginBottom: "5px",
   //   textAlign: "center"
-  // },
+  },
   // cardFooter: {
   //   paddingTop: "0rem",
   //   border: "0",

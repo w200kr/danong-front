@@ -8,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Lock from "@material-ui/icons/Lock";
 import PermIdentity from "@material-ui/icons/PermIdentity";
 
+import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
@@ -51,7 +52,6 @@ const PageSignUp = (props)=>{
     reValidateMode: 'onBlur'
   });
 
-  const watchCategory = watch('category');
   const watchPassword = watch('password');
 
   React.useEffect(() => {
@@ -82,145 +82,120 @@ const PageSignUp = (props)=>{
   }
 
   return (
-    <Page
-      // image={image}
+    <Box
+      display="flex" 
+      style={{height:'100vh'}}
     >
-      <Grid container justify="center">
-        <Grid item xs={12} sm={12} md={8}>
-            <h4>Sign Up</h4>
-            <form onSubmit={
-              // handleSubmit(signUp)
-              handleSubmit(data=>{
-                console.log(data)
-              })
-            }>
-              <Grid container spacing={1}>
-                <Grid item xs={12} sm={12} md={6}>
-                  <FormTextField
-                    name='team'
-                    controllerProps={{...baseControllerProps, defaultValue:1}}
-                    fieldProps={{
-                      select: true,
-                      label: '소속 팀 선택',
-                      variant: 'outlined',
-                      helperText: "현재는 시립대 소속만 가입 가능합니다.",
-                      error: errors?.team&&true,
-                    }}
-                  >
-                    <MenuItem value={1}>서울시립대학교 Cityhawks</MenuItem>
-                  </FormTextField>
+      <Box
+        m='auto'
+      >
+        <Grid container justify="center">
+          <Grid item xs={12} sm={12} md={4}>
+              <Typography variant='h5' align='center' gutterBottom>회원가입</Typography>
+              <form onSubmit={
+                // handleSubmit(signUp)
+                handleSubmit(data=>{
+                  console.log(data)
+                })
+              }>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={12} md={12}>
+                    <FormRadioField
+                      name='category'
+                      controllerProps={{...baseControllerProps}}
+                      labelText='분류'
+                      // helperText='본인의 분류를 선택해주세요.'
+                      error= {errors?.category&&true}
+                      options={[
+                        {value:"seller", label:"판매자"},
+                        {value:"buyer", label:"구매자"},
+                      ]}
+                    />
 
-                  <FormRadioField
-                    name='is_graduated'
-                    controllerProps={{...baseControllerProps}}
-                    labelText='소속 팀 선택'
-                    helperText='현재는 시립대 소속만 가입 가능합니다.'
-                    error= {errors?.is_graduated&&true}
-                    options={[
-                      {value:"false", label:"재학생"},
-                      {value:"true", label:"졸업생"},
-                    ]}
-                  />
-
-                  <FormRadioField
-                    name='category'
-                    controllerProps={{...baseControllerProps}}
-                    labelText='분류'
-                    helperText='본인의 분류를 선택해주세요.'
-                    error= {errors?.category&&true}
-                    options={[
-                      {value:"Player", label:"선수"},
-                      {value:"Manager", label:"매니저"},
-                      {value:"Coach", label:"코치"},
-                    ]}
-                  />
-
-                  <FormTextField 
-                    name='username'
-                    controllerProps={{
-                      ...baseControllerProps, 
-                      rules: {
-                        ...baseControllerProps.rules,
-                        pattern: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
-                      },
-                    }}
-                    fieldProps={{
-                      type: 'email',
-                      label: '이메일',
-                      variant: 'outlined',
-                      InputProps: {
-                        endAdornment: (<InputAdornment position="end">
-                            <PermIdentity className={classes.inputIconsColor} />
-                          </InputAdornment>),
-                      },
-                      helperText: (errors?.username&&true)?"올바른 이메일 주소가 아닙니다.":'가입하셨던 이메일을 입력해주세요.',
-                      error: errors?.username&&true,
-                    }}
-                  />
-
-                  <FormTextField 
-                    name='password'
-                    controllerProps={{
-                      ...baseControllerProps, 
-                      rules: {
-                        ...baseControllerProps.rules,
-                        pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10,}$/,
-                      },
-                    }}
-                    fieldProps={{
-                      type: "password",
-                      label: '비밀번호',
-                      variant: 'outlined',
-                      InputProps: {
-                        endAdornment: (<InputAdornment position="end">
-                            <Lock className={classes.inputIconsColor} />
-                          </InputAdornment>),
-                      },
-                      helperText: (errors?.password&&true)?"최소 10자, 최소 하나의 문자 및 하나의 숫자":'최소 10자, 최소 하나의 문자 및 하나의 숫자',
-                      error: errors?.password&&true,
-                    }}
-                  />
-                  <FormTextField 
-                    name='password_confirm'
-                    controllerProps={{
-                      ...baseControllerProps, 
-                      rules: {
-                        ...baseControllerProps.rules,
-                        pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10,}$/,
-                        validate: {
-                          confirm: value => watchPassword === value,
+                    <FormTextField 
+                      name='username'
+                      controllerProps={{
+                        ...baseControllerProps, 
+                        rules: {
+                          ...baseControllerProps.rules,
+                          pattern: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
                         },
-                      },
-                    }}
-                    fieldProps={{
-                      type: "password",
-                      label: '비밀번호 확인',
-                      variant: 'outlined',
-                      InputProps: {
-                        endAdornment: (<InputAdornment position="end">
-                            <Lock className={classes.inputIconsColor} />
-                          </InputAdornment>),
-                      },
-                      helperText: (errors?.password_confirm&&true)?"최소 10자, 최소 하나의 문자 및 하나의 숫자":'최소 10자, 최소 하나의 문자 및 하나의 숫자',
-                      error: errors?.password_confirm&&true,
-                    }}
-                  />
+                      }}
+                      fieldProps={{
+                        type: 'email',
+                        label: '이메일',
+                        variant: 'outlined',
+                        InputProps: {
+                          endAdornment: (<InputAdornment position="end">
+                              <PermIdentity className={classes.inputIconsColor} />
+                            </InputAdornment>),
+                        },
+                        helperText: (errors?.username&&true)?"올바른 이메일 주소가 아닙니다.":'가입하실 이메일을 입력해주세요.',
+                        error: errors?.username&&true,
+                      }}
+                    />
+
+                    <FormTextField 
+                      name='password'
+                      controllerProps={{
+                        ...baseControllerProps, 
+                        rules: {
+                          ...baseControllerProps.rules,
+                          pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10,}$/,
+                        },
+                      }}
+                      fieldProps={{
+                        type: "password",
+                        label: '비밀번호',
+                        variant: 'outlined',
+                        InputProps: {
+                          endAdornment: (<InputAdornment position="end">
+                              <Lock className={classes.inputIconsColor} />
+                            </InputAdornment>),
+                        },
+                        helperText: (errors?.password&&true)?"최소 10자, 최소 하나의 문자 및 하나의 숫자":'최소 10자, 최소 하나의 문자 및 하나의 숫자',
+                        error: errors?.password&&true,
+                      }}
+                    />
+                    <FormTextField 
+                      name='password_confirm'
+                      controllerProps={{
+                        ...baseControllerProps, 
+                        rules: {
+                          ...baseControllerProps.rules,
+                          pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10,}$/,
+                          validate: {
+                            confirm: value => watchPassword === value,
+                          },
+                        },
+                      }}
+                      fieldProps={{
+                        type: "password",
+                        label: '비밀번호 확인',
+                        variant: 'outlined',
+                        InputProps: {
+                          endAdornment: (<InputAdornment position="end">
+                              <Lock className={classes.inputIconsColor} />
+                            </InputAdornment>),
+                        },
+                        helperText: (errors?.password_confirm&&true)?"최소 10자, 최소 하나의 문자 및 하나의 숫자":'최소 10자, 최소 하나의 문자 및 하나의 숫자',
+                        error: errors?.password_confirm&&true,
+                      }}
+                    />
+                  </Grid>
+                    <Typography variant="subtitle2" className={classes.divider} gutterBottom>
+                      회원 가입시, <Link href='#' onClick={handleOpenDialog({terms:true})}>이용약관</Link>과 <Link href='#' onClick={handleOpenDialog({privacy:true})}>개인정보취급정책</Link>에 동의한 것으로 간주됩니다.
+                    </Typography>
+                    <Button type='submit' variant='contained' color="primary" size="large" fullWidth>
+                      회원가입
+                    </Button>
                 </Grid>
-              </Grid>
-              <Grid container>
-                <Grid item xs={12} sm={12} md={12}>
-                  <Typography variant="subtitle2" className={classes.divider} gutterBottom>
-                    회원 가입시, <Link href='#' onClick={handleOpenDialog({terms:true})}>이용약관</Link>과 <Link href='#' onClick={handleOpenDialog({privacy:true})}>개인정보취급정책</Link>에 동의한 것으로 간주됩니다.
-                  </Typography>
-                  <Button type='submit' variant='contained' color="primary" size="large" fullWidth>
-                    회원가입
-                  </Button>
-                </Grid>
-              </Grid>
-            </form>
+              </form>
+          </Grid>
         </Grid>
-      </Grid>
-    </Page>)
+      </Box>
+    </Box>
+  )
 }
 
 export default PageSignUp;

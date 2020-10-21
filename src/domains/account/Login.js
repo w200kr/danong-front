@@ -73,87 +73,85 @@ const PageLogin = (props)=>{
   const maxWidth = 'xs';
 
   return (
+    <Box
+      display="flex" 
+      style={{height:'100vh'}}
+    >
+      <Box
+        m='auto'
+      >
+        <Container className={classes.container} maxWidth={maxWidth} disableGutters>
+            <Grid item container justify="space-evenly" alignItems="center">
+              <Grid item style={{marginBottom:'40px'}}>
+                <Logo />
+              </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <form className={classes.form} onSubmit={handleSubmit(login)}>
 
+                  <FormTextField 
+                    name='username'
+                    controllerProps={{
+                      ...baseControllerProps, 
+                      rules: {
+                        required: true,
+                        pattern: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
+                      },
+                    }}
+                    fieldProps={{
+                      type: 'email',
+                      label: '이메일',
+                      variant: 'outlined',
+                      InputProps: {
+                        endAdornment: (<InputAdornment position="end">
+                            <PermIdentity className={classes.inputIconsColor} />
+                          </InputAdornment>),
+                      },
+                      helperText: (errors?.username&&true)?"올바른 이메일 주소가 아닙니다.":'',
+                      error: errors?.username&&true,
+                    }}
+                  />
+                  <FormTextField 
+                    name='password'
+                    controllerProps={{
+                      ...baseControllerProps, 
+                      rules: {
+                        required: true,
+                        pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10,}$/,
+                      },
+                    }}
+                    fieldProps={{
+                      type: "password",
+                      label: '비밀번호',
+                      variant: 'outlined',
+                      InputProps: {
+                        endAdornment: (<InputAdornment position="end">
+                            <Lock className={classes.inputIconsColor} />
+                          </InputAdornment>),
+                      },
+                      helperText: (errors?.password&&true)?"최소 10자, 최소 하나의 문자 및 하나의 숫자":'',
+                      error: errors?.password&&true,
+                    }}
+                  />
+                  
 
-  <Box
-    display="flex" 
-    style={{height:'100vh'}}
-  >
-  <Box
-    m='auto'
-  >
-    <Container className={classes.container} maxWidth={maxWidth} disableGutters>
-        <Grid item container justify="space-evenly" alignItems="center">
-          <Grid item style={{marginBottom:'40px'}}>
-            <Logo />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <form className={classes.form} onSubmit={handleSubmit(login)}>
-
-              <FormTextField 
-                name='username'
-                controllerProps={{
-                  ...baseControllerProps, 
-                  rules: {
-                    required: true,
-                    pattern: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
-                  },
-                }}
-                fieldProps={{
-                  type: 'email',
-                  label: '이메일',
-                  variant: 'outlined',
-                  InputProps: {
-                    endAdornment: (<InputAdornment position="end">
-                        <PermIdentity className={classes.inputIconsColor} />
-                      </InputAdornment>),
-                  },
-                  helperText: (errors?.username&&true)?"올바른 이메일 주소가 아닙니다.":'',
-                  error: errors?.username&&true,
-                }}
-              />
-              <FormTextField 
-                name='password'
-                controllerProps={{
-                  ...baseControllerProps, 
-                  rules: {
-                    required: true,
-                    pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10,}$/,
-                  },
-                }}
-                fieldProps={{
-                  type: "password",
-                  label: '비밀번호',
-                  variant: 'outlined',
-                  InputProps: {
-                    endAdornment: (<InputAdornment position="end">
-                        <Lock className={classes.inputIconsColor} />
-                      </InputAdornment>),
-                  },
-                  helperText: (errors?.password&&true)?"최소 10자, 최소 하나의 문자 및 하나의 숫자":'',
-                  error: errors?.password&&true,
-                }}
-              />
-              
-
-              <Button type='submit' variant='contained' size="large" fullWidth style={{backgroundColor:'#05AA6F', color:'white', marginTop:'20px'}}>
-                로그인
-              </Button>
-            </form>
-          </Grid>
-          <Grid item>
-            <Link>
-              아이디/비밀번호 찾기
-            </Link>
-          </Grid>
-          <Grid item>
-            <Link>
-              회원가입
-            </Link>
-          </Grid>
-        </Grid>
-    </Container>
-    </Box>
+                  <Button type='submit' variant='contained' size="large" fullWidth style={{backgroundColor:'#05AA6F', color:'white', marginTop:'20px'}}>
+                    로그인
+                  </Button>
+                </form>
+              </Grid>
+              <Grid item>
+                <Link>
+                  아이디/비밀번호 찾기
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link onClick={()=>{history.push('/signup')}}>
+                  회원가입
+                </Link>
+              </Grid>
+            </Grid>
+        </Container>
+      </Box>
     </Box>
   )
 }
