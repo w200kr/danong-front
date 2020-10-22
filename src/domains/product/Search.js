@@ -12,8 +12,6 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import { RenderAfterNavermapsLoaded, NaverMap, Marker } from 'react-naver-maps'; // 패키지 불러오기
 
-import Tabs from 'containers/Tabs/Tabs.js'
-
 // import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
 import Logo from 'components/Atoms/Logo/Logo.js'
 
@@ -56,8 +54,6 @@ function NaverMapAPI(){
 function ListItemLink(props) {
   return <ListItem button component="a" {...props} />;
 }
-
-
 
 const Search = (props)=> {
   const classes = useStyles();
