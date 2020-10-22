@@ -17,7 +17,6 @@ const Logo = ({width, height})=>{
         <rect id="사각형_181" data-name="사각형 181" width="31" height="19" transform="translate(46 48.239)" fill="#39290f"/>
       </g>
     </svg>
-
   )
 }
 export default Logo;
