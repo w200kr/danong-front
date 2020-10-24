@@ -24,7 +24,7 @@ jobs:
         run: yarn
 
       - name: Build                   # React Build
-        run: yarn build
+        run: CI=false yarn build
 
       - name: Deploy                  # S3에 배포하기
         env:
