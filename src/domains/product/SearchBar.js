@@ -1,53 +1,31 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
-import { fade, makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Hidden from '@material-ui/core/Hidden';
-import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Link from '@material-ui/core/Link';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import Box from '@material-ui/core/Box';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Paper from '@material-ui/core/Paper';
-import MenuList from '@material-ui/core/MenuList';
 import Popover from '@material-ui/core/Popover';
 import Divider from '@material-ui/core/Divider';
 
 import ToggleButton from '@material-ui/lab/ToggleButton';
 
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
-import FormTextField from 'components/Atoms/FormTextField/FormTextField.js'
+import FormCheckbox from 'components/Atoms/FormCheckbox/FormCheckbox.js'
+import VerticalTabs from 'components/Tabs/VerticalTabs.js'
 
 import styles from "./SearchBar.style.js";
 
 const useStyles = makeStyles(styles);
 
-export default function SearchBar({brandComponent, maxWidth}) {
+export default function SearchBar({handleClick}) {
   const classes = useStyles();
-
-  // const [open, setOpen] = React.useState(false);
-
-  // const [itemPanelOpen, setItemPanelOpen] = React.useState(false);
-
 
   const [openPanels, setOpenPanels] = React.useState({
     item: false,
@@ -72,12 +50,7 @@ export default function SearchBar({brandComponent, maxWidth}) {
     defaultValue: '',
   }
   
-  const preventDefault = (event) => event.preventDefault();
-
-  // const handleToggle = () => {
-  //   setOpen((prevOpen) => !prevOpen);
-  // };
-
+  // const preventDefault = (event) => event.preventDefault();
   const handlePanelClose = (key) => (event) => {
     if (anchorRefs.item.current && anchorRefs.item.current.contains(event.target)) {
       return;
@@ -87,19 +60,7 @@ export default function SearchBar({brandComponent, maxWidth}) {
       ...openPanels,
       [key]:!openPanels[key],
     })
-
-    // setOpen(false);
-    // setItemPanelOpen(!itemPanelOpen)
   };
-
-  // const prevOpen = React.useRef(open);
-  // React.useEffect(() => {
-  //   if (prevOpen.current === true && open === false) {
-  //     anchorRefs.item.current.focus();
-  //   }
-
-  //   prevOpen.current = open;
-  // }, [open]);
 
   const makePopoverProps = (key) => ({
     className: classes.popover,
@@ -117,6 +78,22 @@ export default function SearchBar({brandComponent, maxWidth}) {
     PaperProps:{
       className: classes.panel,
     }
+  })
+
+  const makeToggleButtonProps = (key) => ({
+      value: `open${key.charAt(0).toUpperCase() + key.slice(1)}Panel`,
+      variant: "outlined" ,
+      color: "default" ,
+      className: classes.toggleButton,
+      selected: openPanels[key],
+      onChange: ()=>{
+        setOpenPanels({
+          ...openPanels,
+          [key]:!openPanels[key],
+        })
+        // handleToggle()
+      },
+      ref:anchorRefs[key],
   })
 
   const makeEndIcon = (open)=> (
@@ -138,86 +115,30 @@ export default function SearchBar({brandComponent, maxWidth}) {
               placeholder="주소 검색"
               // inputProps={{ 'aria-label': 'search google maps' }}
             />
-            <IconButton type="submit" className={classes.iconButton} aria-label="search">
+            <IconButton type="submit" className={classes.iconButton} aria-label="search" onClick={handleClick}>
               <SearchIcon />
             </IconButton>
             <Divider className={classes.divider} orientation="vertical" />
 
             <ToggleButton 
-              value='itemPanel'
-              variant="outlined" 
-              color="default" 
-              className={classes.toggleButton}
-              selected={openPanels['item']}
-              onChange={()=>{
-                setOpenPanels({
-                  ...openPanels,
-                  item:!openPanels['item'],
-                })
-                // handleToggle()
-              }}
-
-              ref={anchorRefs.item}
-              // endIcon={<Icon>send</Icon>}
+              {...makeToggleButtonProps('item')}
             >
               품목{makeEndIcon(openPanels['item'])}
             </ToggleButton>
             <ToggleButton 
-              value='envFitPanel'
-              variant="outlined" 
-              color="default" 
-              className={classes.toggleButton}
-              selected={openPanels['envFit']}
-              onChange={()=>{
-                setOpenPanels({
-                  ...openPanels,
-                  envFit:!openPanels['envFit'],
-                })
-                // handleToggle()
-              }}
-
-              ref={anchorRefs.envFit}
-              // endIcon={<Icon>send</Icon>}
+              {...makeToggleButtonProps('envFit')}
             >
-              환경적합도{openPanels['envFit']?<ExpandLessIcon />:<ExpandMoreIcon />}
+              환경적합도{makeEndIcon(openPanels['envFit'])}
             </ToggleButton>
             <ToggleButton 
-              value='deliveryPanel'
-              variant="outlined" 
-              color="default" 
-              className={classes.toggleButton}
-              selected={openPanels['delivery']}
-              onChange={()=>{
-                setOpenPanels({
-                  ...openPanels,
-                  delivery:!openPanels['delivery'],
-                })
-                // handleToggle()
-              }}
-
-              ref={anchorRefs.delivery}
-              // endIcon={<Icon>send</Icon>}
+              {...makeToggleButtonProps('delivery')}
             >
-              배송{openPanels['delivery']?<ExpandLessIcon />:<ExpandMoreIcon />}
+              배송{makeEndIcon(openPanels['delivery'])}
             </ToggleButton>
             <ToggleButton 
-              value='detailPanel'
-              variant="outlined" 
-              color="default" 
-              className={classes.toggleButton}
-              selected={openPanels['detail']}
-              onChange={()=>{
-                setOpenPanels({
-                  ...openPanels,
-                  detail:!openPanels['detail'],
-                })
-                // handleToggle()
-              }}
-
-              ref={anchorRefs.detail}
-              // endIcon={<Icon>send</Icon>}
+              {...makeToggleButtonProps('detail')}
             >
-              품목{openPanels['detail']?<ExpandLessIcon />:<ExpandMoreIcon />}
+              세부필터{makeEndIcon(openPanels['detail'])}
             </ToggleButton>
           </Paper>
         </Toolbar>
@@ -226,8 +147,42 @@ export default function SearchBar({brandComponent, maxWidth}) {
           {...makePopoverProps('item')}
         >
           <ClickAwayListener onClickAway={handlePanelClose('item')}>
-            <Box>
-            아이템
+            <Box className={classes.box}>
+              <VerticalTabs 
+                options={[{
+                  label: '야채류',
+                  content: (
+                    <FormCheckbox
+                      name='itemType'
+                      controllerProps={{...baseControllerProps}}
+                      // labelText='소속 팀 선택'
+                      // helperText='현재는 시립대 소속만 가입 가능합니다.'
+                      error= {errors?.itemType&&true}
+                      options={[
+                        {label:"가지", value:"1"},
+                        {label:"갓", value:"2"},
+                        {label:"미나리", value:"3"},
+                        {label:"배추", value:"4"},
+                        {label:"부추", value:"5"},
+                      ]}
+                    />
+                  ),
+              },{
+                label: '청과류',
+                content: 'fjdladksjcodasas',
+              },{
+                label: '곡류',
+                content: 'fjdladksjcodasas',
+              },{
+                label: '견과류',
+                content: 'fjdladksjcodasas',
+              },{
+                label: '버섯류',
+                content: 'fjdladksjcodasas',
+              },{
+                label: '기타/가공품',
+                content: 'fjdladksjcodasas',
+              }]} />
             </Box>
           </ClickAwayListener>
         </Popover>
@@ -235,7 +190,7 @@ export default function SearchBar({brandComponent, maxWidth}) {
           {...makePopoverProps('envFit')}
         >
           <ClickAwayListener onClickAway={handlePanelClose('envFit')}>
-            <Box>
+            <Box className={classes.box}>
             환경적합도
             </Box>
           </ClickAwayListener>
@@ -244,7 +199,7 @@ export default function SearchBar({brandComponent, maxWidth}) {
           {...makePopoverProps('delivery')}
         >
           <ClickAwayListener onClickAway={handlePanelClose('delivery')}>
-            <Box>
+            <Box className={classes.box}>
             배송
             </Box>
           </ClickAwayListener>
@@ -253,7 +208,7 @@ export default function SearchBar({brandComponent, maxWidth}) {
           {...makePopoverProps('detail')}
         >
           <ClickAwayListener onClickAway={handlePanelClose('detail')}>
-            <Box>
+            <Box className={classes.box}>
             세부필터
             </Box>
           </ClickAwayListener>
