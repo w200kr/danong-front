@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 // pages for this product
-import AuthRoute from "contexts/Auth/AuthRoute.js";
+// import AuthRoute from "contexts/Auth/AuthRoute.js";
 import AuthProvider from "contexts/Auth/AuthProvider.js"
 
 // import PageIndex from "containers/PageIndex/PageIndex.js"
@@ -14,15 +14,10 @@ import PageSearch from "domains/product/Search"
 import PageDetail from "domains/product/Detail"
 import PageLogin from 'domains/account/Login'
 import PageSignUp from 'domains/account/SignUp'
-
 import "utils/date.js";
 
-// import "./index.css";
-
-
-// import "./assets/scss/material-kit-react.scss";
-
-// var hist = createBrowserHistory();
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 
 ReactDOM.render(
   <React.Fragment>
