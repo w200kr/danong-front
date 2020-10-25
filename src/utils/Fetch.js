@@ -45,14 +45,20 @@ const checkValue = val=>{
 // 대신 ok 상태가 false인 resolve가 반환되며, 네트워크 장애나 요청이 완료되지 못한 상태에는 reject가 반환됩니다.
 const Fetch = {
     makeUrl: (url)=>{
+        let obj = {};
         if(url[0]==='/'){
+            obj['external'] = false;
+
             if(process.env.NODE_ENV !== 'production'){
-                return 'http://localhost:8000'+url
+                obj['fullUrl'] = 'http://localhost:8000'+url;
             }
             // TODO : add my ec2 path
-            return 'http://cityhawks-dev.ap-northeast-2.elasticbeanstalk.com'+url
+            obj['fullUrl'] = 'http://cityhawks-dev.ap-northeast-2.elasticbeanstalk.com'+url;
+        }else if (url.startsWith('http')){
+            obj['external'] = true;
+            obj['fullUrl'] = url;
         }
-        return url
+        return obj;
     },
     getCookie: (name)=>{
         var cookieValue = null;
@@ -81,12 +87,25 @@ const Fetch = {
         }
         return {}
     },
-    getHeaders: function(){
-        return {
-            "X-CSRFToken": this.getCookie("csrftoken"),
+    getHeaders: function({extra_headers, external}){
+        let defaultHeaders = {
             "Accept": "application/json",
             "Content-Type": "application/json; charset=utf-8",
-            ...this.getAuthToken(),
+            "X-CSRFToken": this.getCookie("csrftoken"),
+        };
+
+        if (external){
+            return {
+                ...defaultHeaders,
+                ...extra_headers,
+            }
+        }else{
+            return {
+                ...defaultHeaders,
+                "X-CSRFToken": this.getCookie("csrftoken"),
+                ...this.getAuthToken(),
+                ...extra_headers,
+            }
         }
     },
     errorAlert: response=>{
@@ -107,14 +126,14 @@ const Fetch = {
             [cur]: strToBool(data[cur])
         }
     }), {}),
-    get: function (url, options={}){
+    get: function (url, extra_headers={}, options={}){
         if(url===undefined) throw new Error('empty url');
         
-        url = this.makeUrl(url);
+        const {fullUrl, external} = this.makeUrl(url);
 
-        return fetch(url, {
+        return fetch(fullUrl, {
             method: 'GET',
-            headers: this.getHeaders(),
+            headers: this.getHeaders({extra_headers, external}),
             ...options,
         }).then(response=>{
             var contentType = response.headers.get('content-type');
@@ -128,14 +147,14 @@ const Fetch = {
             throw new TypeError("Response is not ok!");
         })
     },
-    post: function (url, data={}, options={}){
+    post: function (url, data={}, extra_headers={}, options={}){
         if(url===undefined) throw new Error('empty url');
-        url = this.makeUrl(url);
+        const {fullUrl, external} = this.makeUrl(url);
         const cleanedData = this.clean(data);
 
-        return fetch(url, {
+        return fetch(fullUrl, {
             method: 'POST',
-            headers: this.getHeaders(),
+            headers: this.getHeaders({extra_headers, external}),
             ...options,
             body: JSON.stringify(cleanedData)
         }).then(response=>{
@@ -156,14 +175,14 @@ const Fetch = {
         //     console.error('There has been a problem with your fetch operation: ', err.message)
         // })
     },
-    put: function (url, data={}, options={}){
+    put: function (url, data={}, extra_headers={}, options={}){
         if(url===undefined) throw new Error('empty url');
-        url = this.makeUrl(url);
+        const {fullUrl, external} = this.makeUrl(url);
         const cleanedData = this.clean(data);
 
-        return fetch(url, {
+        return fetch(fullUrl, {
             method: 'PUT',
-            headers: this.getHeaders(),
+            headers: this.getHeaders({extra_headers, external}),
             ...options,
             body: JSON.stringify(cleanedData)
         }).then(response=>{
@@ -181,13 +200,13 @@ const Fetch = {
         //     console.error('There has been a problem with your fetch operation: ', err.message)
         // })
     },
-    delete: function (url, options={}){
+    delete: function (url, extra_headers={}, options={}){
         if(url===undefined) throw new Error('empty url');
-        url = this.makeUrl(url);
+        const {fullUrl, external} = this.makeUrl(url);
 
-        return fetch(url, {
+        return fetch(fullUrl, {
             method: 'DELETE',
-            headers: this.getHeaders(),
+            headers: this.getHeaders({extra_headers, external}),
             ...options,
         }).then(response=>{
             var contentType = response.headers.get('content-type');
