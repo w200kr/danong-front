@@ -1,3 +1,5 @@
+/*eslint no-extend-native: ["error", { "exceptions": ["Date", "String", "Number"] }]*/
+
 Date.prototype.format = function (f) {
     if (!this.valueOf()) return " ";
     const weekKorName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
