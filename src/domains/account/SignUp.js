@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from '@material-ui/core/Container';
+// import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from "@material-ui/core/InputAdornment";
-import MenuItem from '@material-ui/core/MenuItem';
+// import MenuItem from '@material-ui/core/MenuItem';
 import Lock from "@material-ui/icons/Lock";
 import PermIdentity from "@material-ui/icons/PermIdentity";
 
@@ -13,14 +13,14 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 
-import Page from "containers/Page/Page"
+// import Page from "containers/Page/Page"
 // import FullImagePage from "containers/Page/FullImagePage"
 
 import FormTextField from 'components/Atoms/FormTextField/FormTextField.js'
 import FormRadioField from 'components/Atoms/FormRadioField/FormRadioField.js'
 
 import AuthContext from 'contexts/Auth/AuthContext.js';
-import {Fetch} from 'utils/Fetch.js'
+// import {Fetch} from 'utils/Fetch.js'
 
 // import image from "assets/img/hawks-bg3.jpg";
 
@@ -30,23 +30,18 @@ const useStyles = makeStyles(styles);
 
 const PageSignUp = (props)=>{
   const classes = useStyles();
-  const { history, ...rest } = props;
+  const { history } = props;
 
-  const {signUp, isAuthenticated} = React.useContext(AuthContext) 
+  // const {signUp, isAuthenticated} = React.useContext(AuthContext) 
 
-  const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
-  const [positions, setPositions] = React.useState({
-    offense: [],
-    defense: [],
-  })
+  // const [positions, setPositions] = React.useState({
+  //   offense: [],
+  //   defense: [],
+  // })
   const [openDialogs, setOpenDialogs] = React.useState({
     terms: false,
     privacy: false,
   });
-
-  setTimeout(function() {
-    setCardAnimation("");
-  }, 700);
 
   const { handleSubmit, watch, errors, control, getValues } = useForm({
     reValidateMode: 'onBlur'
@@ -55,17 +50,17 @@ const PageSignUp = (props)=>{
   const watchPassword = watch('password');
 
   React.useEffect(() => {
-    if(isAuthenticated){
-      alert('로그인 상태입니다.')
-      history.push('/')
-    }else{
-      Fetch.get('/api/v1/signup/').then(res=>{
-        setPositions({
-          offense: res['offense_positions'],
-          defense: res['defense_positions'],
-        })
-      })
-    }
+    // if(isAuthenticated){
+    //   alert('로그인 상태입니다.')
+    //   history.push('/')
+    // }else{
+      // Fetch.get('/api/v1/signup/').then(res=>{
+        // setPositions({
+        //   offense: res['offense_positions'],
+        //   defense: res['defense_positions'],
+        // })
+      // })
+    // }
   }, []);
 
   const baseControllerProps = {
