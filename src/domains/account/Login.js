@@ -4,25 +4,25 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from "@material-ui/core/InputAdornment";
-import ListSubheader from '@material-ui/core/ListSubheader';
-import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
+// import ListSubheader from '@material-ui/core/ListSubheader';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import IconButton from '@material-ui/core/IconButton';
+// import DeleteIcon from '@material-ui/icons/Delete';
 import Lock from "@material-ui/icons/Lock";
 import PermIdentity from "@material-ui/icons/PermIdentity";
 
 // import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+// import CardActions from '@material-ui/core/CardActions';
+// import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 
 import Logo from 'components/Atoms/Logo/Logo.js'
 
 
-import Page from "containers/Page/Page"
+// import Page from "containers/Page/Page"
 // import FullImagePage from "containers/Page/FullImagePage"
 
 // import Card from "containers/Card/Card.js";
@@ -30,12 +30,12 @@ import Page from "containers/Page/Page"
 // import CardHeader from "containers/Card/CardHeader.js";
 // import CardFooter from "containers/Card/CardFooter.js";
 
-import FormInput from 'components/Atoms/FormInput/FormInput.js'
+// import FormInput from 'components/Atoms/FormInput/FormInput.js'
 import FormTextField from 'components/Atoms/FormTextField/FormTextField.js'
-import FieldArray from "components/Atoms/FieldArray/FieldArray.js";
+// import FieldArray from "components/Atoms/FieldArray/FieldArray.js";
 
 import AuthContext from 'contexts/Auth/AuthContext.js';
-import {Fetch} from 'utils/Fetch.js'
+// import {Fetch} from 'utils/Fetch.js'
 
 // import image from "assets/img/hawks-bg1.jpeg";
 
@@ -44,15 +44,16 @@ import styles from "./Login.style.js";
 const useStyles = makeStyles(styles);
 
 const PageLogin = (props)=>{
-  const {login, isAuthenticated} = React.useContext(AuthContext) 
+  // const {login, isAuthenticated} = React.useContext(AuthContext) 
+  const {login} = React.useContext(AuthContext) 
 
-  const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+  // const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
 
-  setTimeout(function() {
-    setCardAnimation("");
-  }, 700);
+  // setTimeout(function() {
+  //   setCardAnimation("");
+  // }, 700);
   const classes = useStyles();
-  const { history, ...rest } = props;
+  const { history } = props;
 
   const { handleSubmit, errors, control } = useForm({
     reValidateMode: 'onBlur'
