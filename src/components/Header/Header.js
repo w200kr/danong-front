@@ -13,6 +13,9 @@ import Hidden from "@material-ui/core/Hidden";
 import Drawer from "@material-ui/core/Drawer";
 // @material-ui/icons
 import Menu from "@material-ui/icons/Menu";
+
+import {DefaultRightLinks} from './HeaderLinks.js'
+
 // core components
 import styles from "./Header.style.js";
 
@@ -53,7 +56,7 @@ export default function Header(props) {
     //     .classList.remove(classes[changeColorOnScroll.color]);
     // }
   };
-  const { color, rightLinks, leftLinks, brand, fixed, absolute, history } = props;
+  const { color, rightLinks=<DefaultRightLinks />, leftLinks, brand, fixed, absolute, history } = props;
   const appBarClasses = classNames({
     // [classes.appBar]: true,
     // [classes[color]]: color,
