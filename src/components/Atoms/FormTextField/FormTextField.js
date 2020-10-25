@@ -60,6 +60,7 @@ export default function FormInput(props) {
 }
 
 FormInput.propTypes = {
+  name: PropTypes.string.isRequired,
   // labelText: PropTypes.node,
   // labelProps: PropTypes.object,
   // id: PropTypes.string,
