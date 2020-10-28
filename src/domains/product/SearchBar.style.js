@@ -73,8 +73,6 @@ const searchBarStyle = theme => ({
   },
   popover: {
   },
-  box: {
-  },
   panel: {
     width: '80vw',
     height: 300,

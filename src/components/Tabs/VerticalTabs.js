@@ -49,13 +49,16 @@ const useStyles = makeStyles((theme) => ({
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
   },
+  tab: {
+    // height: 24,
+  }
 }));
 
 export default function VerticalTabs(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
-  const {options} = props;
+  const {options, tabsActions} = props;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -71,10 +74,11 @@ export default function VerticalTabs(props) {
         aria-label="Vertical tabs example"
         // indicatorColor="primary"
 
+        action={tabsActions}
         className={classes.tabs}
       >
         {options.map((option, index)=>
-          <Tab key={index} label={option.label} {...a11yProps(index)} />
+          <Tab className={classes.tab} key={index} label={option.label} {...a11yProps(index)} />
         )}
       </Tabs>
 
