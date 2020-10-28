@@ -29,14 +29,33 @@ const searchStyle = theme => {
       backgroundColor: '#707070',
     },
     links: {
-      display: 'flex'
+      display: 'flex',
+      color: 'white',
+      '& *':{
+        width: 'auto',
+        fontSize: 20,
+        padding: 8,
+      }
     },
     detail: {
     },
+    roundButton: {
+      margin:12,
+      borderRadius: 10,
+    },
     roundBox: {
-      height: 100,
+      marginTop: 20,
+      marginBottom: 40,
+      paddingTop: 20,
+      paddingBottom: 20,
       borderRadius: 20,
       border: '1px solid black',
+    },
+    profileTitle:{
+      marginBottom: 100,
+    },
+    profileSubTitle:{
+      marginBottom: 12,
     },
     sellerInfo: {
 

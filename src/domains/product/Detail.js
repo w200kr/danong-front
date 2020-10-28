@@ -211,19 +211,19 @@ const Detail = (props)=> {
       <Box className={classes.tabs} display='flex' alignItems='center' justifyContent='center'>
         <List className={classes.links}>
           <ListItem>
-            <ListItemText primary="재료찾기" />
+            <ListItemText primary="상세설명" />
           </ListItem>
           <ListItem>
-            <ListItemText primary="관심목록" />
+            <ListItemText primary="구매후기" />
           </ListItem>
           <ListItem>
-            <ListItemText primary="재료등록" />
+            <ListItemText primary="상품문의" />
           </ListItem>
           <ListItem>
-            <ListItemText primary="내정보" />
+            <ListItemText primary="교환/반품" />
           </ListItem>
           <ListItem>
-            <ListItemText primary="로그인" />
+            <ListItemText primary="리뷰" />
           </ListItem>
         </List>
       </Box>
@@ -233,46 +233,51 @@ const Detail = (props)=> {
         alignItems="center"
       >
         <Grid className={classes.sellerInfo} item xs={12}>
-          <Box display='flex' flexDirection='column' justifyContent='flex-start' alignItems='center'>
-            <Typography>
+          <Box display='flex' flexDirection='column' justifyContent='flex-start' alignItems='center' pt={16}>
+            <Typography className={classes.profileTitle} variant="h5">
               농업인 정보
             </Typography>
             <img src="https://dummyimage.com/180x180/d3d3d3/000000" width='180' height='180' alt="" />
-            <Typography>
+            <Typography variant="h6">
               이수민
             </Typography>
             <Typography>
               부안 우리네 쌀 방앗간 대표
             </Typography>
 
-            <Box component="fieldset" mb={3} borderColor="transparent">
+            <Box component="fieldset" borderColor="transparent">
               <Rating id='dd' name="read-only" value={2} readOnly />
               <Typography component="label" htmlFor='dd'>(4.9 / 352)</Typography>
             </Box>
+            <Box display='flex' justifyContent='space-evenly' width='100%' mb={3}>
+              <Button className={classes.roundButton} variant="outlined" fullWidth>Tel. 043-123-1234</Button>
+              <Button className={classes.roundButton} variant="outlined" fullWidth>1:1 문의</Button>
+            </Box>
             <Box display='flex' width="50%" justifyContent='space-evenly'>
-              <Button variant="contained">Tel. 043-123-1234</Button>
-              <Button variant="contained">1:1 문의</Button>
+              <Typography variant='button'>
+                다농 등록건수 : 1건
+              </Typography>
+              <Typography variant='button'>
+                주 판매 작물 : 곡류
+              </Typography>
             </Box>
           </Box>
-          <Typography>
-            다농 등록건수 : 1건<span style={{width:100}}></span>주 판매 작물 : 곡류
-          </Typography>
+
           <Box className={classNames(classes.roundBox)}>
-            <Typography variant='h6' align='center'>주요 경력</Typography>
+            <Typography className={classes.profileSubTitle} variant='h6' align='center'>주요 경력</Typography>
             <Typography align='center'>쌀 농사 경력 37년</Typography>
             <Typography align='center'>해당 농지 농사 경력 21년</Typography>
             <Typography align='center'>2003년 7월 친환경 인증 농업인 취득</Typography>
           </Box>
           <Box className={classNames(classes.roundBox)}>
-            <Typography align='center'>농업인 한마디</Typography>
-            <pre>
-              {`평생을 농사지어 세 자식을 키우고 먹이고 
-              대학까지 보냈습니다. 
-              쌀 농사에 일생을 바친만큼 
-              쌀은 자신있습니다. 
-              믿고 구매해주십시오 감사합니다
-              (1:1문의는 자주 확인이 불가하오니 전화주시면 감사하겠습니다.)`}
-            </pre>
+            <Typography className={classes.profileSubTitle} variant='h6' align='center'>농업인 한마디</Typography>
+
+            <Typography align='center'>평생을 농사지어 세 자식을 키우고 먹이고</Typography>
+            <Typography align='center'>대학까지 보냈습니다.</Typography>
+            <Typography align='center'>쌀 농사에 일생을 바친만큼</Typography>
+            <Typography align='center'>쌀은 자신있습니다.</Typography>
+            <Typography align='center'>믿고 구매해주십시오 감사합니다</Typography>
+            <Typography align='center'>(1:1문의는 자주 확인이 불가하오니 전화주시면 감사하겠습니다.)</Typography>
           </Box>
         </Grid>
         <Grid className={classes.productInfo} item xs={12}>
