@@ -125,7 +125,7 @@ const PageSignUp = (props)=>{
                               <PermIdentity className={classes.inputIconsColor} />
                             </InputAdornment>),
                         },
-                        helperText: (errors?.username&&true)?"올바른 이메일 주소가 아닙니다.":'가입하실 이메일을 입력해주세요.',
+                        helperText: (errors?.username&&true)?"올바른 이메일 주소가 아닙니다.":'',
                         error: errors?.username&&true,
                       }}
                     />
@@ -148,7 +148,7 @@ const PageSignUp = (props)=>{
                               <Lock className={classes.inputIconsColor} />
                             </InputAdornment>),
                         },
-                        helperText: (errors?.password&&true)?"최소 10자, 최소 하나의 문자 및 하나의 숫자":'최소 10자, 최소 하나의 문자 및 하나의 숫자',
+                        helperText: (errors?.password&&true)?"최소 10자, 최소 하나의 문자 및 하나의 숫자":'',
                         error: errors?.password&&true,
                       }}
                     />
@@ -158,7 +158,6 @@ const PageSignUp = (props)=>{
                         ...baseControllerProps, 
                         rules: {
                           ...baseControllerProps.rules,
-                          pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10,}$/,
                           validate: {
                             confirm: value => watchPassword === value,
                           },
@@ -173,7 +172,7 @@ const PageSignUp = (props)=>{
                               <Lock className={classes.inputIconsColor} />
                             </InputAdornment>),
                         },
-                        helperText: (errors?.password_confirm&&true)?"최소 10자, 최소 하나의 문자 및 하나의 숫자":'최소 10자, 최소 하나의 문자 및 하나의 숫자',
+                        helperText: (errors?.password_confirm&&true)?"비밀번호와 확인이 일치하지 않습니다.":'',
                         error: errors?.password_confirm&&true,
                       }}
                     />
@@ -181,7 +180,10 @@ const PageSignUp = (props)=>{
                     <Typography variant="subtitle2" className={classes.divider} gutterBottom>
                       회원 가입시, <Link href='#' onClick={handleOpenDialog({terms:true})}>이용약관</Link>과 <Link href='#' onClick={handleOpenDialog({privacy:true})}>개인정보취급정책</Link>에 동의한 것으로 간주됩니다.
                     </Typography>
-                    <Button type='submit' variant='contained' color="primary" size="large" fullWidth>
+                    <Button type='submit' variant='contained' size="large" fullWidth style={{
+                      backgroundColor: '#39280F',
+                      color:'white',
+                    }}>
                       회원가입
                     </Button>
                 </Grid>
