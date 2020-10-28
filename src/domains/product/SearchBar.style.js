@@ -73,9 +73,16 @@ const searchBarStyle = theme => ({
   },
   popover: {
   },
+  box: {
+    // padding: 12,
+    height: '100%',
+  },
+  innerBox: {
+    padding: 12,
+  },
   panel: {
-    width: '80vw',
-    height: 300,
+    width: '60vw',
+    maxHeight: 300,
     // padding: 5,
     borderRadius: 20,
     border: '1px solid black',
