@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { makeStyles } from "@material-ui/core/styles";
-// import Container from '@material-ui/core/Container';
+import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
-// import MenuItem from '@material-ui/core/MenuItem';
 import Lock from "@material-ui/icons/Lock";
 import PermIdentity from "@material-ui/icons/PermIdentity";
 
@@ -13,16 +13,12 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 
-// import Page from "containers/Page/Page"
-// import FullImagePage from "containers/Page/FullImagePage"
-
 import FormTextField from 'components/Atoms/FormTextField/FormTextField.js'
 import FormRadioField from 'components/Atoms/FormRadioField/FormRadioField.js'
+import DanongLogo from 'components/Atoms/Logo/Logo.js'
 
 import AuthContext from 'contexts/Auth/AuthContext.js';
 // import {Fetch} from 'utils/Fetch.js'
-
-// import image from "assets/img/hawks-bg3.jpg";
 
 import styles from "./SignUp.style.js";
 
@@ -32,12 +28,11 @@ const PageSignUp = (props)=>{
   const classes = useStyles();
   const { history } = props;
 
+  const maxWidth = 'xs';
+
+
   // const {signUp, isAuthenticated} = React.useContext(AuthContext) 
 
-  // const [positions, setPositions] = React.useState({
-  //   offense: [],
-  //   defense: [],
-  // })
   const [openDialogs, setOpenDialogs] = React.useState({
     terms: false,
     privacy: false,
@@ -53,13 +48,6 @@ const PageSignUp = (props)=>{
     // if(isAuthenticated){
     //   alert('로그인 상태입니다.')
     //   history.push('/')
-    // }else{
-      // Fetch.get('/api/v1/signup/').then(res=>{
-        // setPositions({
-        //   offense: res['offense_positions'],
-        //   defense: res['defense_positions'],
-        // })
-      // })
     // }
   }, []);
 
@@ -84,8 +72,22 @@ const PageSignUp = (props)=>{
       <Box
         m='auto'
       >
-        <Grid container justify="center">
-          <Grid item xs={12} sm={12} md={4}>
+        <Container 
+          component={Grid}
+          className={classes.container} 
+          maxWidth={maxWidth} 
+          disableGutters
+          container
+          direction='column'
+          justify="space-evenly"
+          alignItems="center"
+        >
+          <Grid item style={{marginBottom:'40px'}}>
+            <IconButton onClick={()=>history.push('/')}>
+              <DanongLogo />
+            </IconButton>
+          </Grid>
+          <Grid item xs={12} sm={12} md={12}>
               <Typography variant='h5' align='center' gutterBottom>회원가입</Typography>
               <form onSubmit={
                 // handleSubmit(signUp)
@@ -189,7 +191,7 @@ const PageSignUp = (props)=>{
                 </Grid>
               </form>
           </Grid>
-        </Grid>
+        </Container>
       </Box>
     </Box>
   )

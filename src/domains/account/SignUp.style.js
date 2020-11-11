@@ -1,14 +1,16 @@
 // import { container } from "assets/jss/material-kit-react.js";
 
 const signupPageStyle = {
-  // container: {
+  container: {
   //   ...container,
   //   zIndex: "2",
   //   position: "relative",
   //   paddingTop: "20vh",
   //   color: "#FFFFFF",
   //   paddingBottom: "200px"
-  // },
+    paddingLeft: 4,
+    paddingRight: 4,
+  },
   // cardHidden: {
   //   opacity: "0",
   //   transform: "translate3d(0, -60px, 0)"
