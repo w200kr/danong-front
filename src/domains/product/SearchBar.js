@@ -318,7 +318,103 @@ export default function SearchBar({handleClick}) {
         >
           <ClickAwayListener touchEvent={false} onClickAway={handlePanelClose('delivery')}>
             <Box className={classes.box}>
-            배송
+              <Grid container>
+                <Grid className={classes.innerBox} item xs={12} md={3} component={Box} borderRight={1}>
+                  <FormCheckbox
+                    name='grade'
+                    controllerProps={{...baseControllerProps}}
+                    fieldProps={{
+                      row: false,
+                    }}
+                    labelText='급지'
+                    helperText='* 선택 상품에 따라 고르신 지역에서 가장 가까운 거리순으로 추천합니다.'
+                    error= {errors?.grade&&true}
+                    options={[
+                      {label:"1급지", value:"1"},
+                      {label:"2급지", value:"2"},
+                      {label:"무관", value:"3"},
+                    ]}
+                  />
+                </Grid>
+                <Grid className={classes.innerBox} item xs={12} md={3} component={Box} borderRight={1}>
+                  <FormCheckbox
+                    name='env'
+                    controllerProps={{...baseControllerProps}}
+                    fieldProps={{
+                      row: false,
+                    }}
+                    labelText='친환경 제품'
+                    helperText='* 유기농, 자연산 등을 뜻하는 것이 아닌 재배, 생육, 생산, 포장, 유통 단계에서의 낮은 탄소배출을 의미합니다.'
+                    error= {errors?.env&&true}
+                    options={[
+                      {label:"저탄소", value:"1"},
+                      {label:"선택안함", value:"2"},
+                    ]}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} container>
+                  <Grid item xs={12} component={Box} borderBottom={1} style={{padding:30}}>
+                    <Typography id="soil-fit-slider" gutterBottom>
+                      토지적합성
+                    </Typography>
+                    <Slider
+                      defaultValue={[40,10]}
+                      aria-labelledby="soil-fit-slider"
+                      step={-10}
+                      marks={[
+                        {
+                          value: 40,
+                          label: '1급',
+                        },
+                        {
+                          value: 30,
+                          label: '2급',
+                        },
+                        {
+                          value: 20,
+                          label: '3급',
+                        },
+                        {
+                          value: 10,
+                          label: '비관련',
+                        },
+                      ]}
+                      min={10}
+                      max={40}
+                    />
+                  </Grid>
+                  <Grid item xs={12} style={{padding:30}}>
+                    <Typography id="weather-fit-slider" gutterBottom>
+                      기후적합성
+                    </Typography>
+                    <Slider
+                      defaultValue={[40,10]}
+                      aria-labelledby="weather-fit-slider"
+                      step={-10}
+                      marks={[
+                        {
+                          value: 40,
+                          label: '1급',
+                        },
+                        {
+                          value: 30,
+                          label: '2급',
+                        },
+                        {
+                          value: 20,
+                          label: '3급',
+                        },
+                        {
+                          value: 10,
+                          label: '비관련',
+                        },
+                      ]}
+                      min={10}
+                      max={40}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
             </Box>
           </ClickAwayListener>
         </Popover>
@@ -327,7 +423,103 @@ export default function SearchBar({handleClick}) {
         >
           <ClickAwayListener touchEvent={false} onClickAway={handlePanelClose('detail')}>
             <Box className={classes.box}>
-            세부필터
+              <Grid container>
+                <Grid className={classes.innerBox} item xs={12} md={3} component={Box} borderRight={1}>
+                  <FormCheckbox
+                    name='grade'
+                    controllerProps={{...baseControllerProps}}
+                    fieldProps={{
+                      row: false,
+                    }}
+                    labelText='급지'
+                    helperText='* 선택 상품에 따라 고르신 지역에서 가장 가까운 거리순으로 추천합니다.'
+                    error= {errors?.grade&&true}
+                    options={[
+                      {label:"1급지", value:"1"},
+                      {label:"2급지", value:"2"},
+                      {label:"무관", value:"3"},
+                    ]}
+                  />
+                </Grid>
+                <Grid className={classes.innerBox} item xs={12} md={3} component={Box} borderRight={1}>
+                  <FormCheckbox
+                    name='env'
+                    controllerProps={{...baseControllerProps}}
+                    fieldProps={{
+                      row: false,
+                    }}
+                    labelText='친환경 제품'
+                    helperText='* 유기농, 자연산 등을 뜻하는 것이 아닌 재배, 생육, 생산, 포장, 유통 단계에서의 낮은 탄소배출을 의미합니다.'
+                    error= {errors?.env&&true}
+                    options={[
+                      {label:"저탄소", value:"1"},
+                      {label:"선택안함", value:"2"},
+                    ]}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} container>
+                  <Grid item xs={12} component={Box} borderBottom={1} style={{padding:30}}>
+                    <Typography id="soil-fit-slider" gutterBottom>
+                      토지적합성
+                    </Typography>
+                    <Slider
+                      defaultValue={[40,10]}
+                      aria-labelledby="soil-fit-slider"
+                      step={-10}
+                      marks={[
+                        {
+                          value: 40,
+                          label: '1급',
+                        },
+                        {
+                          value: 30,
+                          label: '2급',
+                        },
+                        {
+                          value: 20,
+                          label: '3급',
+                        },
+                        {
+                          value: 10,
+                          label: '비관련',
+                        },
+                      ]}
+                      min={10}
+                      max={40}
+                    />
+                  </Grid>
+                  <Grid item xs={12} style={{padding:30}}>
+                    <Typography id="weather-fit-slider" gutterBottom>
+                      기후적합성
+                    </Typography>
+                    <Slider
+                      defaultValue={[40,10]}
+                      aria-labelledby="weather-fit-slider"
+                      step={-10}
+                      marks={[
+                        {
+                          value: 40,
+                          label: '1급',
+                        },
+                        {
+                          value: 30,
+                          label: '2급',
+                        },
+                        {
+                          value: 20,
+                          label: '3급',
+                        },
+                        {
+                          value: 10,
+                          label: '비관련',
+                        },
+                      ]}
+                      min={10}
+                      max={40}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
             </Box>
           </ClickAwayListener>
         </Popover>

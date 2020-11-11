@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme)=>({
     links: {
         display: 'flex',
 
-        [theme.breakpoints.down('xs')]: {
+        [theme.breakpoints.down('md')]: {
             flexDirection: 'column',
         },
         '& *':{
@@ -36,15 +36,17 @@ const DefaultRightLinks = ()=>{
             <ListItemLink onClick={()=>history.push('/')}>
                 <ListItemText primary="재료찾기" />
             </ListItemLink>
-            <ListItemLink onClick={()=>history.push('/')}>
+            <ListItemLink onClick={()=>history.push('/wishlist')}>
                 <ListItemText primary="관심목록" />
             </ListItemLink>
-            <ListItemLink onClick={()=>history.push('/')}>
+            <ListItemLink onClick={()=>history.push('/add')}>
                 <ListItemText primary="재료등록" />
             </ListItemLink>
+        {/*
             <ListItemLink onClick={()=>history.push('/')}>
                 <ListItemText primary="내정보" />
             </ListItemLink>
+        */}
             <ListItemLink onClick={()=>history.push('/login')}>
                 <ListItemText primary="로그인" />
             </ListItemLink>

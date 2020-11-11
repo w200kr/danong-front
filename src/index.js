@@ -12,6 +12,7 @@ import AuthProvider from "contexts/Auth/AuthProvider.js"
 // import PageIndex from "containers/PageIndex/PageIndex.js"
 import PageAdd from "domains/product/Add"
 import PageSearch from "domains/product/Search"
+import PageWishList from "domains/product/WishList"
 import PageDetail from "domains/product/Detail"
 import PageLogin from 'domains/account/Login'
 import PageSignUp from 'domains/account/SignUp'
@@ -30,6 +31,7 @@ ReactDOM.render(
           <Route path="/login" component={PageLogin} />
           <Route path="/signup" component={PageSignUp} />
 
+          <Route path="/wishlist" component={PageWishList} />
           <Route path="/add" component={PageAdd} />
           <Route path="/:productId" component={PageDetail} />
         </Switch>
