@@ -18,6 +18,7 @@ import { RenderAfterNavermapsLoaded, NaverMap, Marker } from 'react-naver-maps';
 import Logo from 'components/Atoms/Logo/Logo.js'
 
 import FormTextField from 'components/Atoms/FormTextField/FormTextField.js'
+import makeMarkers from 'components/Marker/Marker.js'
 import Header from "components/Header/Header.js";
 import Footer from "components/Footer/Footer.js";
 import SearchBar from "./SearchBar.js";
@@ -32,48 +33,20 @@ import styles from "./Search.style.js";
 const useStyles = makeStyles(styles);
 
 
-function NaverMapAPI(){
+function NaverMapAPI(props){
   const navermaps = window.naver.maps;
   const N = window.N;
 
-  const [center, setCenter] = React.useState({ lat: 36.2253017, lng: 127.6460516 });
+  const {center, handleCenter, zoom} = props;
 
   const MarkerClustering = customCluster(navermaps)
 
   const naverMapRef = React.useRef(null);
 
   React.useEffect(()=>{
-    console.log('useEffect')
-    console.log(naverMapRef.current)
-    console.log(window.naver)
-
-
-    var marker1 = {
-      content: '<div style="cursor:pointer;width:26px;height:26px;line-height:26px;font-size:10px;color:white;background-color:#91CD2B;border-radius:50%;text-align:center;font-weight:bold;"></div>',
-      size: N.Size(40, 40),
-      anchor: N.Point(20, 20)
-    },
-    marker2 = {
-      content: '<div style="cursor:pointer;width:30px;height:30px;line-height:30px;font-size:10px;color:white;background-color:#71B429;border-radius:50%;text-align:center;font-weight:bold;"></div>',
-      size: N.Size(40, 40),
-      anchor: N.Point(20, 20)
-    },
-    marker3 = {
-      content: '<div style="cursor:pointer;width:34px;height:34px;line-height:34px;font-size:10px;color:white;background-color:#397400;border-radius:50%;text-align:center;font-weight:bold;"></div>',
-      size: N.Size(40, 40),
-      anchor: N.Point(20, 20)
-    },
-    marker4 = {
-      content: '<div style="cursor:pointer;width:36px;height:36px;line-height:36px;font-size:10px;color:white;background-color:#033E00;border-radius:50%;text-align:center;font-weight:bold;"></div>',
-      size: N.Size(40, 40),
-      anchor: N.Point(20, 20)
-    },
-    marker5 = {
-      content: '<div style="cursor:pointer;width:38px;height:38px;line-height:38px;font-size:10px;color:white;background-color:#002100;border-radius:50%;text-align:center;font-weight:bold;"></div>',
-      size: N.Size(40, 40),
-      anchor: N.Point(20, 20)
-    };
-
+    // console.log('useEffect')
+    // console.log(naverMapRef.current)
+    // console.log(window.naver)
 
     let markers = [];
 
@@ -90,13 +63,13 @@ function NaverMapAPI(){
     }
 
     var markerClustering = new MarkerClustering({
-      minClusterSize: 2,
+      minClusterSize: 1,
       maxZoom: 13,
       map: naverMapRef.current.map,
       markers: markers,
       disableClickZoom: false,
       gridSize: 80,
-      icons: [marker1, marker2, marker3, marker4, marker5],
+      icons: makeMarkers(N),
       indexGenerator: [10, 20, 30, 50, 100],
       stylingFunction: function(clusterMarker, count) {
         clusterMarker.getElement().firstElementChild.textContent=count
@@ -113,83 +86,56 @@ function NaverMapAPI(){
       }}
       // defaultCenter={center} // 지도 초기 위치
       center={center}
-      onCenterChanged={center => setCenter(center)}
+      onCenterChanged={handleCenter}
       zoomControl={true}
       zoomControlOptions={{
         position: navermaps.Position.TOP_LEFT,
         style: navermaps.ZoomControlStyle.SMALL
       }}
 
-      defaultZoom={7} // 지도 초기 확대 배율
+      zoom={zoom} // 지도 초기 확대 배율
 
       naverRef={ref=>{naverMapRef.current=ref}}
     >
-      <Marker
-        key={1}
-        position={new navermaps.LatLng(37.551229, 126.988205)}
-        onClick={() => {
-          console.log(naverMapRef)
-        }}
-      />
     </NaverMap>
   )
-
 } 
 
 const Search = (props)=> {
   const classes = useStyles();
   const {history, ...rest } = props;
 
-  const { handleSubmit, errors, control } = useForm({
-    reValidateMode: 'onBlur'
-  });
+  const [center, setCenter] = React.useState({ lat: 36.2253017, lng: 127.6460516 });
+  const [zoom, setZoom] = React.useState(7);
+  const [products, setProducts] = React.useState([{
+    },{
+    },{
+    },{
+    },{
+    },{
+    },{
+    },{
+    },{
+    },{
+    },{
+    },{
+    },{
+    },{
+  }])
 
-  const baseControllerProps = {
-    control: control,
-    defaultValue: '',
+  const handleClick = (address) => async () => {
+    if (address===''){
+      alert('주소를 입력해주세요.')
+      return ;
+    }
+    setZoom(9)
+    // let response = await Fetch.get('/api/navermap/geocode/'+address)
+    // if (response.status==='OK' && response.meta.totalCount > 0){
+    //   setCenter({lat: response.addresses[0].y, lng: response.addresses[0].x})
+    // }
   }
 
-  const products = [{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-  }]
-
-  const handleClick = ()=>{
-    // const a = React.lazy(()=>import('utils/MarkerClustering.js'))
-
-    // console.log(a)
-      // loadJs('../../utils/MarkerClustering.js', ()=>{
-      //   alert()
-      // });
-
-
-
-
-    // console.log('START');
-    Fetch.get('https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=분당구 불정로 6', {
-      'X-NCP-APIGW-API-KEY-ID': 'm11ogby6ag',
-      'X-NCP-APIGW-API-KEY': 'G8nc8zH5sP4pg8ZVMYETnLoReXCfx04vgNKvwsPE',
-    }).then(res=>{
-      console.log(res)
-    });
-  }
-
-
-
-
-  React.useEffect(() => {
-  }, []);
+  const handleCenter= center => setCenter(center) 
 
   return (
     <Box className={classes.root} component="div" display='flex' flexDirection="column" overflow="hidden" height="100vh">
@@ -217,7 +163,11 @@ const Search = (props)=> {
             loading={<p>Maps Loading...</p>}
             submodules={['geocoder']}
           >
-            <NaverMapAPI />
+            <NaverMapAPI 
+              center={center} 
+              handleCenter={handleCenter}
+              zoom={zoom}
+            />
           </RenderAfterNavermapsLoaded>
         </Grid>
       </Grid>
