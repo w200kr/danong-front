@@ -9,14 +9,18 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import {List, ListItem, ListItemText} from '@material-ui/core'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
     links: {
         display: 'flex',
+
+        [theme.breakpoints.down('xs')]: {
+            flexDirection: 'column',
+        },
         '& *':{
             width: 'auto',
         }
     },
-});
+}));
 
 
 function ListItemLink(props) {
