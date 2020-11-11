@@ -49,11 +49,16 @@ const Fetch = {
         if(url[0]==='/'){
             obj['external'] = false;
 
-            if(process.env.NODE_ENV !== 'production'){
+            if(process.env.NODE_ENV === 'development'){
                 obj['fullUrl'] = 'http://localhost:8000'+url;
             }
+            else if(process.env.NODE_ENV === 'production'){
+                obj['fullUrl'] = 'http://cityhawks-dev.ap-northeast-2.elasticbeanstalk.com'+url;
+            }
+            else{
+                new Error('process.env.NODE_ENV is not on development or production')
+            }
             // TODO : add my ec2 path
-            obj['fullUrl'] = 'http://cityhawks-dev.ap-northeast-2.elasticbeanstalk.com'+url;
         }else if (url.startsWith('http')){
             obj['external'] = true;
             obj['fullUrl'] = url;
