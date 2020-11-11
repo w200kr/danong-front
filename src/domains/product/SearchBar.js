@@ -24,6 +24,8 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import FormCheckbox from 'components/Atoms/FormCheckbox/FormCheckbox.js'
 import VerticalTabs from 'components/Tabs/VerticalTabs.js'
 
+import {Fetch} from 'utils/Fetch.js'
+
 import styles from "./SearchBar.style.js";
 
 const useStyles = makeStyles(styles);
@@ -38,6 +40,22 @@ export default function SearchBar({handleClick}) {
     detail: false,
   });
 
+  const [categories, setCategories] = React.useState([
+    {"value":"garden","label":"야채류","sub_categories":[{"id":1,"large_category":"garden","name":"가지"},{"id":2,"large_category":"garden","name":"깻잎"},{"id":3,"large_category":"garden","name":"배추"},{"id":4,"large_category":"garden","name":"상추"}]},
+    {"value":"green","label":"청과류","sub_categories":[{"id":6,"large_category":"green","name":"사과"},{"id":7,"large_category":"green","name":"배"}]},
+    {"value":"grain","label":"곡류","sub_categories":[{"id":8,"large_category":"grain","name":"쌀"}]},
+    {"value":"nuts","label":"견과류","sub_categories":[{"id":9,"large_category":"nuts","name":"땅콩"}]},
+    {"value":"mushrooms","label":"버섯류","sub_categories":[{"id":10,"large_category":"mushrooms","name":"송이버섯"}]},
+    {"value":"etc","label":"기타/가공품","sub_categories":[{"id":11,"large_category":"etc","name":"홍삼"}]}
+  ])
+
+
+  React.useEffect(() => {
+    // Fetch.get('/api/categories/depth').then(res=>{
+    //   setCategories(res)
+    // })
+  }, []);
+
   const tabsActions = React.useRef()
   const anchorRefs = {
     item: React.useRef(null),
@@ -46,7 +64,7 @@ export default function SearchBar({handleClick}) {
     detail: React.useRef(null),
   };
 
-  const { handleSubmit, errors, control } = useForm({
+  const { handleSubmit, errors, control, register, getValues, watch } = useForm({
     reValidateMode: 'onBlur'
   });
 
@@ -54,9 +72,12 @@ export default function SearchBar({handleClick}) {
     control: control,
     defaultValue: '',
   }
-  
+
   // const preventDefault = (event) => event.preventDefault();
   const handlePanelClose = (key) => (event) => {
+    // console.log(anchorRefs.item.current)
+    // console.log(anchorRefs.item.current)
+    // console.log(event.target)
     if (anchorRefs.item.current && anchorRefs.item.current.contains(event.target)) {
       return;
     }
@@ -65,6 +86,8 @@ export default function SearchBar({handleClick}) {
       ...openPanels,
       [key]:!openPanels[key],
     })
+
+    console.log(openPanels)
   };
 
   const makePopoverProps = (key) => ({
@@ -107,6 +130,26 @@ export default function SearchBar({handleClick}) {
     </span>
   );
 
+  const options = categories.map((category)=>({
+    label: category.label,
+    content: (
+      <FormCheckbox
+        name={category.value}
+        controllerProps={{...baseControllerProps}}
+        // labelText='소속 팀 선택'
+        // helperText='현재는 시립대 소속만 가입 가능합니다.'
+        error= {errors?.itemType&&true}
+        options={
+          category.sub_categories.map(sub_category=>({
+            label: sub_category.name,
+            value: sub_category.id,
+          }))
+        }
+      />
+    ),
+  }))
+
+  const watchAddress = watch('address')
 
   return (
       <AppBar className={classes.appBar} component='div' position="static" color='default' variant='outlined' elevation={0}>
@@ -117,10 +160,12 @@ export default function SearchBar({handleClick}) {
           >
             <InputBase
               className={classes.input}
+              name='address'
+              inputRef={register}
               placeholder="주소 검색"
               // inputProps={{ 'aria-label': 'search google maps' }}
             />
-            <IconButton type="submit" className={classes.iconButton} aria-label="search" onClick={handleClick}>
+            <IconButton type="submit" className={classes.iconButton} aria-label="search" onClick={handleClick(watchAddress)}>
               <SearchIcon />
             </IconButton>
             <Divider className={classes.divider} orientation="vertical" />
@@ -154,115 +199,22 @@ export default function SearchBar({handleClick}) {
             tabsActions.current.updateIndicator()
           }}
         >
-          <ClickAwayListener onClickAway={handlePanelClose('item')}>
+          <ClickAwayListener touchEvent={false} onClickAway={handlePanelClose('item')}>
             <Box className={classes.box}>
               <VerticalTabs 
                 tabsActions={tabsActions}
-                options={[{
-                  label: '야채류',
-                  content: (
-                    <FormCheckbox
-                      name='itemType'
-                      controllerProps={{...baseControllerProps}}
-                      // labelText='소속 팀 선택'
-                      // helperText='현재는 시립대 소속만 가입 가능합니다.'
-                      error= {errors?.itemType&&true}
-                      options={[
-                        {label:"가지", value:"1"},
-                        {label:"갓", value:"2"},
-                        {label:"미나리", value:"3"},
-                        {label:"배추", value:"4"},
-                        {label:"부추", value:"5"},
-                      ]}
-                    />
-                  ),
-              },{
-                label: '청과류',
-                content: (
-                  <FormCheckbox
-                    name='itemType'
-                    controllerProps={{...baseControllerProps}}
-                    // labelText='소속 팀 선택'
-                    // helperText='현재는 시립대 소속만 가입 가능합니다.'
-                    error= {errors?.itemType&&true}
-                    options={[
-                      {label:"사과", value:"1"},
-                      {label:"배", value:"2"},
-                      {label:"딸기", value:"3"},
-                    ]}
-                  />
-                ),
-              },{
-                label: '곡류',
-                content: (
-                  <FormCheckbox
-                    name='itemType'
-                    controllerProps={{...baseControllerProps}}
-                    // labelText='소속 팀 선택'
-                    // helperText='현재는 시립대 소속만 가입 가능합니다.'
-                    error= {errors?.itemType&&true}
-                    options={[
-                      {label:"쌀", value:"1"},
-                      {label:"보리", value:"2"},
-                      {label:"밀", value:"3"},
-                    ]}
-                  />
-                ),
-              },{
-                label: '견과류',
-                content: (
-                  <FormCheckbox
-                    name='itemType'
-                    controllerProps={{...baseControllerProps}}
-                    // labelText='소속 팀 선택'
-                    // helperText='현재는 시립대 소속만 가입 가능합니다.'
-                    error= {errors?.itemType&&true}
-                    options={[
-                      {label:"땅콩", value:"1"},
-                      {label:"캐슈넛", value:"2"},
-                    ]}
-                  />
-                ),
-              },{
-                label: '버섯류',
-                content: (
-                  <FormCheckbox
-                    name='itemType'
-                    controllerProps={{...baseControllerProps}}
-                    // labelText='소속 팀 선택'
-                    // helperText='현재는 시립대 소속만 가입 가능합니다.'
-                    error= {errors?.itemType&&true}
-                    options={[
-                      {label:"송이버섯", value:"1"},
-                      {label:"느타리버섯", value:"2"},
-                    ]}
-                  />
-                ),
-              },{
-                label: '기타/가공품',
-                content: (
-                  <FormCheckbox
-                    name='itemType'
-                    controllerProps={{...baseControllerProps}}
-                    // labelText='소속 팀 선택'
-                    // helperText='현재는 시립대 소속만 가입 가능합니다.'
-                    error= {errors?.itemType&&true}
-                    options={[
-                      {label:"홍삼", value:"1"},
-                    ]}
-                  />
-                ),
-              }]} />
+                options={options} 
+              />
             </Box>
           </ClickAwayListener>
         </Popover>
         <Popover 
           {...makePopoverProps('envFit')}
         >
-          <ClickAwayListener onClickAway={handlePanelClose('envFit')}>
+          <ClickAwayListener touchEvent={false} onClickAway={handlePanelClose('envFit')}>
             <Box className={classes.box}>
               <Grid container>
-                <Grid className={classes.innerBox} item xs={3} component={Box} borderRight={1}>
+                <Grid className={classes.innerBox} item xs={12} md={3} component={Box} borderRight={1}>
                   <FormCheckbox
                     name='grade'
                     controllerProps={{...baseControllerProps}}
@@ -279,7 +231,7 @@ export default function SearchBar({handleClick}) {
                     ]}
                   />
                 </Grid>
-                <Grid className={classes.innerBox} item xs={3} component={Box} borderRight={1}>
+                <Grid className={classes.innerBox} item xs={12} md={3} component={Box} borderRight={1}>
                   <FormCheckbox
                     name='env'
                     controllerProps={{...baseControllerProps}}
@@ -295,7 +247,7 @@ export default function SearchBar({handleClick}) {
                     ]}
                   />
                 </Grid>
-                <Grid item xs={6} container>
+                <Grid item xs={12} md={6} container>
                   <Grid item xs={12} component={Box} borderBottom={1} style={{padding:30}}>
                     <Typography id="soil-fit-slider" gutterBottom>
                       토지적합성
@@ -364,7 +316,7 @@ export default function SearchBar({handleClick}) {
         <Popover 
           {...makePopoverProps('delivery')}
         >
-          <ClickAwayListener onClickAway={handlePanelClose('delivery')}>
+          <ClickAwayListener touchEvent={false} onClickAway={handlePanelClose('delivery')}>
             <Box className={classes.box}>
             배송
             </Box>
@@ -373,7 +325,7 @@ export default function SearchBar({handleClick}) {
         <Popover 
           {...makePopoverProps('detail')}
         >
-          <ClickAwayListener onClickAway={handlePanelClose('detail')}>
+          <ClickAwayListener touchEvent={false} onClickAway={handlePanelClose('detail')}>
             <Box className={classes.box}>
             세부필터
             </Box>
