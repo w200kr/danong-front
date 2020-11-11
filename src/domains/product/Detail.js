@@ -246,8 +246,8 @@ const Detail = (props)=> {
             </Typography>
 
             <Box component="fieldset" borderColor="transparent">
-              <Rating id='dd' name="read-only" value={2} readOnly />
-              <Typography component="label" htmlFor='dd'>(4.9 / 352)</Typography>
+              <Rating id='dd' name="read-only" value={4.2} readOnly />
+              <Typography component="label" htmlFor='dd'>(4.2 / 352)</Typography>
             </Box>
             <Box display='flex' justifyContent='space-evenly' width='100%' mb={3}>
               <Button className={classes.roundButton} variant="outlined" fullWidth>Tel. 043-123-1234</Button>
@@ -292,7 +292,7 @@ const Detail = (props)=> {
               <img src="https://dummyimage.com/40x40/d3d3d3/000000" height={40} width={40} alt="" />
               <Box display='flex' flexDirection="column">
                 <Typography>
-                  신석은
+                  사용자
                 </Typography>
                 <Box component="fieldset" borderColor="transparent" m={0} p={0}>
                   <Rating id='dd' name="read-only" value={2.5} readOnly />
