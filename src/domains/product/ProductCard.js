@@ -54,7 +54,7 @@ export default function ProductCard(props) {
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image="https://dummyimage.com/200x260/d3d3d3/000000"
+          image="https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/8a01/4e58cb376c57357410935010f77a70e288adfdd0cd3535ac164a7bf2dd99.jpg"
           title="Paella dish"
         />
         <CardHeader
