@@ -53,7 +53,7 @@ const Fetch = {
                 obj['fullUrl'] = 'http://localhost:8000'+url;
             }
             else if(process.env.NODE_ENV === 'production'){
-                obj['fullUrl'] = 'http://cityhawks-dev.ap-northeast-2.elasticbeanstalk.com'+url;
+                obj['fullUrl'] = 'http://3.35.207.184'+url;
             }
             else{
                 new Error('process.env.NODE_ENV is not on development or production')
@@ -92,26 +92,29 @@ const Fetch = {
         }
         return {}
     },
-    getHeaders: function({extra_headers, external}){
-        let defaultHeaders = {
+    getHeaders: function({extra_headers, external, isFormData}){
+        let defaultHeaders = (isFormData)? {}:{
             "Accept": "application/json",
             "Content-Type": "application/json; charset=utf-8",
-            "X-CSRFToken": this.getCookie("csrftoken"),
-        };
+        }
+
+        let headers;
 
         if (external){
-            return {
+            headers = {
                 ...defaultHeaders,
                 ...extra_headers,
             }
         }else{
-            return {
+            headers = {
                 ...defaultHeaders,
-                "X-CSRFToken": this.getCookie("csrftoken"),
+                // "X-CSRFToken": this.getCookie("csrftoken"),
                 ...this.getAuthToken(),
                 ...extra_headers,
             }
         }
+
+        return headers;
     },
     errorAlert: response=>{
       let message = "";
@@ -141,7 +144,7 @@ const Fetch = {
             headers: this.getHeaders({extra_headers, external}),
             ...options,
         }).then(response=>{
-            var contentType = response.headers.get('content-type');
+            var contentType = response.headers.get('Content-Type');
 
             if(response.ok) {
                 if(contentType && contentType.includes('application/json')) {
@@ -154,16 +157,17 @@ const Fetch = {
     },
     post: function (url, data={}, extra_headers={}, options={}){
         if(url===undefined) throw new Error('empty url');
+        const isFormData = data instanceof FormData;
         const {fullUrl, external} = this.makeUrl(url);
-        const cleanedData = this.clean(data);
+        const cleanedData = (isFormData)? data : JSON.stringify(this.clean(data))
 
         return fetch(fullUrl, {
             method: 'POST',
-            headers: this.getHeaders({extra_headers, external}),
-            ...options,
-            body: JSON.stringify(cleanedData)
+            headers: this.getHeaders({extra_headers, external, isFormData}),
+            body: cleanedData,
+            // ...options,
         }).then(response=>{
-            var contentType = response.headers.get('content-type');
+            var contentType = response.headers.get('Content-Type');
 
             if(response.ok) {
                 if(contentType && contentType.includes('application/json')) {
@@ -188,10 +192,10 @@ const Fetch = {
         return fetch(fullUrl, {
             method: 'PUT',
             headers: this.getHeaders({extra_headers, external}),
+            body: JSON.stringify(cleanedData),
             ...options,
-            body: JSON.stringify(cleanedData)
         }).then(response=>{
-            var contentType = response.headers.get('content-type');
+            var contentType = response.headers.get('Content-Type');
 
             if(response.ok) {
                 if(contentType && contentType.includes('application/json')) {
@@ -214,7 +218,7 @@ const Fetch = {
             headers: this.getHeaders({extra_headers, external}),
             ...options,
         }).then(response=>{
-            var contentType = response.headers.get('content-type');
+            var contentType = response.headers.get('Content-Type');
 
             if(response.ok) {
                 if(contentType && contentType.includes('application/json')) {

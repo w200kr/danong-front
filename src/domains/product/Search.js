@@ -37,7 +37,7 @@ function NaverMapAPI(props){
   const navermaps = window.naver.maps;
   const N = window.N;
 
-  const {center, handleCenter, zoom} = props;
+  const {center, handleCenter, zoom, products} = props;
 
   const MarkerClustering = customCluster(navermaps)
 
@@ -50,17 +50,17 @@ function NaverMapAPI(props){
 
     let markers = [];
 
-    // for (var i = 0, ii = sampleData.length; i < ii; i++) {
-    for (var i = 0, ii = 100; i < ii; i++) {
-      var spot = sampleData[i];
-      var latlng = new navermaps.LatLng(spot.grd_la, spot.grd_lo);
+    products.map(product=>{
+      var latlng = new navermaps.LatLng(product.lat, product.lng);
       var marker = new navermaps.Marker({
         position: latlng,
         draggable: true,
       });
 
       markers.push(marker);
-    }
+    })
+
+    console.log(markers)
 
     var markerClustering = new MarkerClustering({
       minClusterSize: 1,
@@ -75,7 +75,7 @@ function NaverMapAPI(props){
         clusterMarker.getElement().firstElementChild.textContent=count
       }
     });
-  },[])
+  },[products])
 
   return (
     <NaverMap
@@ -107,21 +107,14 @@ const Search = (props)=> {
 
   const [center, setCenter] = React.useState({ lat: 36.2253017, lng: 127.6460516 });
   const [zoom, setZoom] = React.useState(7);
-  const [products, setProducts] = React.useState([{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-    },{
-  }])
+  const [products, setProducts] = React.useState([])
+
+
+  React.useEffect(()=>{
+    Fetch.get('/api/products/').then(res=>{
+      setProducts(res);
+    })
+  },[])
 
   const handleClick = (address) => async () => {
     if (address===''){
@@ -150,7 +143,7 @@ const Search = (props)=> {
           {
             products.map((product, index)=>(
               <Grid item xs={12} sm={6} md={6} lg={4} xl={3} key={index}>
-                <ProductCard {...product} history={history} />
+                <ProductCard {...{product, history}} />
               </Grid>
             ))
           }
@@ -167,6 +160,7 @@ const Search = (props)=> {
               center={center} 
               handleCenter={handleCenter}
               zoom={zoom}
+              products={products}
             />
           </RenderAfterNavermapsLoaded>
         </Grid>

@@ -16,10 +16,13 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+
+import Rating from '@material-ui/lab/Rating';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 4,
     paddingLeft: 8,
     paddingRight: 8,
+    position: 'relative',
   },
   media: {
     // minWidth: 260,
@@ -40,23 +44,51 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProductCard(props) {
-  const {history} = props;
+  const {product, history} = props;
   const classes = useStyles();
+
+  const [dib, setDib] = React.useState(false);
+
+  console.log(product)
+
+  // ["id", "seller", "images", "options", "name", "address", "price", "view_count", "description", "thumbnail", "is_hide", "lat", "lng", "created", "updated", "category", "history"]
 
   // const preventDefault = (event) => event.preventDefault();
   const handleClick = event =>{
     event.preventDefault();
-    history.push('/1')
+    history.push('/'+product.id)
+  }
+
+  const handleToggleDib = (e)=>{
+    e.stopPropagation()
+    setDib(!dib)
   }
 
   return (
     <Card className={classes.root} onClick={handleClick}>
-      <CardActionArea>
+      {/*<CardActionArea>*/}
         <CardMedia
           className={classes.media}
-          image="https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/8a01/4e58cb376c57357410935010f77a70e288adfdd0cd3535ac164a7bf2dd99.jpg"
-          title="Paella dish"
+          image={product.thumbnail}
+          title={product.name}
         />
+
+        <IconButton
+          aria-label="search"
+          onClick={handleToggleDib}
+          edge="end"
+          size='default'
+          fontSize="default"
+          style={{
+            position: 'absolute',
+            top: '0px',
+            right: '12px',
+            zIndex: 200,
+            color: 'white',
+          }}
+        >
+          {(dib)?<FavoriteIcon color="secondary" />:<FavoriteBorderIcon />}
+        </IconButton>
         <CardHeader
           title={
             <Box
@@ -74,8 +106,8 @@ export default function ProductCard(props) {
                   justify="space-between"
                   alignItems="center"
                 >
-                    <Typography variant='subtitle2' align='left'>부안 우리네 쌀 방앗간</Typography>
-                    <Typography variant='subtitle2' align='right'>198,000원</Typography>
+                    <Typography variant='subtitle2' align='left'>{product.name}</Typography>
+                    <Typography variant='subtitle2' align='right'>{product.price}원</Typography>
                 </Grid>
                 <Grid 
                   item 
@@ -84,8 +116,8 @@ export default function ProductCard(props) {
                   justify="space-between"
                   alignItems="center"
                 >
-                    <Typography variant='caption' align='left'>전북 부안군 신기리 128</Typography>
-                    <Typography variant='caption' align='right'>쌀 10KG X 12개월</Typography>
+                    <Typography variant='caption' align='left'>{product.address}</Typography>
+                    <Typography variant='caption' align='right'>{product.view_count}회</Typography>
                 </Grid>
               </Grid>
             </Box>
@@ -95,18 +127,10 @@ export default function ProductCard(props) {
               container
               justify="space-between"
             >
-              <Grid 
-                item 
-                xs={8} 
-              >
-                <Typography variant='caption' align='left'>농업일지 보유 / 도정 6일 이내 배송 / 저농약 재배</Typography>
-              </Grid>
-              <Grid 
-                item 
-                xs={4} 
-              >
-                <Typography variant='subtitle2' align='right'>문의요망</Typography>
-              </Grid>
+              <Box display='flex'>
+                <Rating value={4.2} size="small" readOnly />
+                <Typography>(352)</Typography>
+              </Box>
             </Grid>
           }
           disableTypography={true}
@@ -118,8 +142,8 @@ export default function ProductCard(props) {
 
           }}
         />
-      </CardActionArea>
       {/*
+      </CardActionArea>
         <CardContent>
           <Typography variant="body2" color="textSecondary" component="p">
             This impressive paella is a perfect party dish and a fun meal to cook together with your

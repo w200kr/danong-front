@@ -17,7 +17,7 @@ const searchStyle = theme => {
     },
     container: {
       // backgroundColor: 'yellow',
-      // flex: '1 1 auto',
+      flex: '1 1 auto',
       display: 'flex',
       overflow: 'hidden',
       flexWrap: 'nowrap',
