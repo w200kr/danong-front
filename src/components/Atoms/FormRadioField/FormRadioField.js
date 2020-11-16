@@ -38,8 +38,8 @@ export default function FormRadioField(props) {
   var formControlClasses;
   if (formControlProps !== undefined) {
     formControlClasses = classNames(
+      classes.formControl,
       formControlProps.className,
-      classes.formControl
     );
   } else {
     formControlClasses = classes.formControl;
