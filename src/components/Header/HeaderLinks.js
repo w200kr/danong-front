@@ -42,11 +42,9 @@ const DefaultRightLinks = ()=>{
             <ListItemLink onClick={()=>history.push('/add')}>
                 <ListItemText primary="재료등록" />
             </ListItemLink>
-        {/*
-            <ListItemLink onClick={()=>history.push('/')}>
+            <ListItemLink onClick={()=>history.push('/profile')}>
                 <ListItemText primary="내정보" />
             </ListItemLink>
-        */}
             <ListItemLink onClick={()=>history.push('/login')}>
                 <ListItemText primary="로그인" />
             </ListItemLink>
