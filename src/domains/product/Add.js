@@ -1,12 +1,12 @@
 import React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import {Box, Container, Grid, InputAdornment, Button, IconButton, List, ListItem, ListItemText, Link, Paper, Typography, Divider, MenuItem, InputBase} from '@material-ui/core';
+import {Box, Container, Grid, InputAdornment, Button, IconButton, Typography, MenuItem, CircularProgress, Input, TextField} from '@material-ui/core';
 
-import PermIdentity from '@material-ui/icons/PermIdentity';
+import SearchIcon from '@material-ui/icons/Search';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { RenderAfterNavermapsLoaded, NaverMap, Marker } from 'react-naver-maps'; // 패키지 불러오기
@@ -30,14 +30,29 @@ export default (props)=>{
   const {history, ...rest } = props;
 
 
-  const [categories, setCategories] = React.useState([
-    {"value":"garden","label":"야채류","sub_categories":[{"id":1,"large_category":"garden","name":"가지"},{"id":2,"large_category":"garden","name":"깻잎"},{"id":3,"large_category":"garden","name":"배추"},{"id":4,"large_category":"garden","name":"상추"}]},
-    {"value":"green","label":"청과류","sub_categories":[{"id":6,"large_category":"green","name":"사과"},{"id":7,"large_category":"green","name":"배"}]},
-    {"value":"grain","label":"곡류","sub_categories":[{"id":8,"large_category":"grain","name":"쌀"}]},
-    {"value":"nuts","label":"견과류","sub_categories":[{"id":9,"large_category":"nuts","name":"땅콩"}]},
-    {"value":"mushrooms","label":"버섯류","sub_categories":[{"id":10,"large_category":"mushrooms","name":"송이버섯"}]},
-    {"value":"etc","label":"기타/가공품","sub_categories":[{"id":11,"large_category":"etc","name":"홍삼"}]}
-  ])
+  const [categories, setCategories] = React.useState([])
+  const [inSearch, setInSearch] = React.useState(false)
+  const [aptitudeTable, setAptitudeTable] = React.useState('')
+  // const [files, setFiles] = React.useState([])
+
+  // const onFileUpload = (event) => {
+  //   event.preventDefault();
+  //   // Get the file Id
+  //   let id = event.target.id;
+  //   // Create an instance of FileReader API
+  //   let file_reader = new FileReader();
+  //   // Get the actual file itself
+  //   let file = event.target.files[0];
+  //   file_reader.onload = () => {
+  //     // After uploading the file
+  //     // appending the file to our state array
+  //     // set the object keys and values accordingly
+  //     setFiles([...files, { file_id: id, uploaded_file: file_reader.result }]);
+  //   };
+  //   // reading the actual uploaded file
+  //   file_reader.readAsDataURL(file);
+  // }
+
 
 
   React.useEffect(() => {
@@ -45,21 +60,32 @@ export default (props)=>{
     //   alert('로그인 상태입니다.')
     //   history.push('/')
     // }else{
-      // Fetch.get('/api/categories/depth').then(res=>{
-      //   setCategories(res)
-      // })
+      Fetch.get('/api/categories/depth').then(res=>{
+        setCategories(res)
+      })
     // }
   }, []);
 
-  const { register, handleSubmit, errors, control, watch, reset } = useForm({
-    reValidateMode: 'onBlur'
+  const defaultImage = {image_type:'', image:''}
+  const defaultImages = [{image_type:'top', image:''},{image_type:'content', image:''}]
+  const defaultOption = {volumn:'', price:''}
+  const defaultOptions = [defaultOption, defaultOption]
+
+  const defaultValues = {
+    images: defaultImages,
+    options: defaultOptions,
+  };
+
+  const { register, handleSubmit, errors, control, watch, reset, setValue } = useForm({
+    reValidateMode: 'onBlur',
+    defaultValues,
   });
 
   const baseControllerProps = {
     control: control,
     defaultValue: '',
     rules: {
-      required: true,
+      // required: true,
     },
   }
 
@@ -72,72 +98,69 @@ export default (props)=>{
     ...rest,
   })
 
-  // const makeFormProps = ({keyword, label})=>({
-  //   name: keyword,
-  //   controllerProps: {
-  //     ...baseControllerProps, 
-  //   },
-  //   fieldProps: {
-  //     ...baseFieldProps({keyword, label}),
-  //   },
-  // })
+  const makeFieldProps = ({name, label, helperText='', errorText='', extraControllerProps, extraFieldProps})=>({
+    name: name,
+    controllerProps: {
+      control: control,
+      defaultValue: '',
+      rules: {
+        // required: true,
+      },
+      ...extraControllerProps,
+    },
+    fieldProps: {
+      className: classes.field,
+      label: label,
+      variant: 'outlined',
+      helperText: (errors?.[name]&&true)?errorText:helperText,
+      error: errors?.[name]&&true,
+      ...extraFieldProps,
+    },
+  })
 
-
-// category
-// name
-// address
-// price
-// description
-// images
-//    FieldArray
-// is_hide
 
 // lat
 // lng
 
-  const watchLargeCategory = watch('large_category')
+  const watchAll = watch()
+  const watchLargeCategory = watchAll['large_category']
 
-  const defaultImage = {image:''}
-  const handleImage = {
-    appendParent: ({append}) => ()=>{
-      append({...defaultImage})
-    },
-    removeParent: ({remove}) => index => ()=>{
-      remove(index)
-    },
-    clearParents: ()=>{
-      reset({['images']:[]})
-    },
+  const handleSearch = ()=>{
+    let address = watchAll['address']
+
+    if (address==='')return;
+
+    setInSearch(true)
+
+    // TODO : need spinner & write exception
+    Fetch.get('/api/nongsaro/'+address).then(res=>{
+      // console.log(res)
+      setValue('address', res['address'])
+      setValue('lng', res['lng'])
+      setValue('lat', res['lat'])
+      setAptitudeTable(res['aptitude_table'])
+    }).finally(() => {
+      // console.log('finally')
+      setInSearch(false)
+    });
   }
 
-  const defaultOption = {volumn:'', price:''}
-  const handleOption = {
-    appendParent: ({append}) => ()=>{
-      append({...defaultOption})
-    },
-    removeParent: ({remove}) => index => ()=>{
-      remove(index)
-    },
-    clearParents: ()=>{
-      reset({['options']:[]})
-    },
-  }
+  const handleResetImages = ()=>reset({ ...watchAll, 'images': defaultImages})
+  const handleResetOptions = ()=>reset({ ...watchAll, 'options': defaultOptions})
 
-  const ImageTypeSelect = (
-    <FormTextField
-      name='image_type'
-      controllerProps={{
-        ...baseControllerProps,
+
+  const renderImageField = (name)=>(
+    <TextField
+      className={classes.field}
+      inputRef={register}
+      type= 'file'
+      inputProps={{
+        accept:'image/jpg,impge/png,image/jpeg',
       }}
-      fieldProps={{
-        select: true,
-        ...baseFieldProps({keyword:'image_type', label:'이미지 용도'}),
-        defaultValue: 'content',
-      }}
-    >
-      <MenuItem value='top'>대표이미지</MenuItem>
-      <MenuItem value='content'>상품상세</MenuItem>
-    </FormTextField>
+      name={name}
+      variant='outlined'
+      fullWidth
+    />
   )
 
   return (
@@ -147,7 +170,32 @@ export default (props)=>{
           <Logo />
         }
       />
-      <form>
+      <form onSubmit={handleSubmit(data=>{
+        console.log(data)
+        // console.log(files)
+
+        const formData = new FormData()
+
+        Object.keys(data).map(key=>{
+          formData.append(key, data[key])
+        })
+        formData.set("thumbnail", data.thumbnail[0])
+        formData.delete('images')
+        formData.delete('options')
+
+        data['images'].map(obj=>{
+          formData.append('images[]', obj.image[0])
+        })
+        data['options'].map(option=>{
+          formData.append('options[]', JSON.stringify(option))
+        })
+
+        // // Fetch.post('/api/products/', data).then(res=>{
+        Fetch.post('/api/products/', formData).then(res=>{
+          alert('정상적으로 등록되었습니다.')
+          history.push('/')
+        });
+      })}>
         <Container 
           className={classes.container} 
           maxWidth='md' 
@@ -166,92 +214,141 @@ export default (props)=>{
             justify="center"
             alignItems="flex-start"
           >
-            <Grid item xs={6}>
-              <FormTextField
-                name='large_category'
-                controllerProps={{
-                  ...baseControllerProps,
-                }}
-                fieldProps={{
-                  select: true,
-                  ...baseFieldProps({keyword:'large_category', label:'상품 대분류'}),
-                }}
-              >
-                {categories.map(category=>
-                  <MenuItem key={category.value} value={category.value}>{category.label}</MenuItem>
-                )}
-              </FormTextField>
-              <FormTextField
-                name='sub_category'
-                controllerProps={{
-                  ...baseControllerProps,
-                }}
-                fieldProps={{
-                  select: true,
-                  ...baseFieldProps({keyword:'sub_category', label:'세부 분류'}),
-                }}
-              >
-                <MenuItem value=''>-</MenuItem>
-                {categories.find(large_category=>large_category.value===watchLargeCategory)?.sub_categories.map(sub_category=>
-                  <MenuItem key={sub_category.id} value={sub_category.id}>{sub_category.name}</MenuItem>
-                )}
-              </FormTextField>
+            <Grid item xs={6} container>
+              <Grid item xs={6}>
+                <FormTextField
+                  {...makeFieldProps({
+                    name: 'large_category',
+                    label: '상품 대분류',
+                    extraFieldProps: {
+                      select: true,
+                    }
+                  })}
+                >
+                  {categories.map(category=>
+                    <MenuItem key={category.value} value={category.value}>{category.label}</MenuItem>
+                  )}
+                </FormTextField>
+              </Grid>
+
+              <Grid item xs={6}>
+                <FormTextField
+                  {...makeFieldProps({
+                    name: 'category',
+                    label: '세부 분류',
+                    extraFieldProps: {
+                      select: true,
+                    }
+                  })}
+                >
+                  <MenuItem value=''>-</MenuItem>
+                  {categories.find(large_category=>large_category.value===watchLargeCategory)?.sub_categories.map(sub_category=>
+                    <MenuItem key={sub_category.id} value={sub_category.id}>{sub_category.name}</MenuItem>
+                  )}
+                </FormTextField>
+              </Grid>
 
               <FormTextField 
-                name='name'
-                controllerProps={{
-                  ...baseControllerProps, 
-                }}
-                fieldProps={{
-                  ...baseFieldProps({keyword:'name', label:'상품명'}),
-                }}
+                {...makeFieldProps({
+                  name: 'name',
+                  label: '상품명',
+                })}
+              />
+              {renderImageField('thumbnail')}
+              <FormTextField 
+                {...makeFieldProps({
+                  name: 'address',
+                  label: '재배지 주소',
+                  extraFieldProps: {
+                    InputProps:{
+                      endAdornment:(
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="search"
+                            onClick={handleSearch}
+                            edge="end"
+                          >
+                            {
+                              (inSearch)?<CircularProgress className={classes.progress} size={28} />:<SearchIcon />
+                            }
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }
+                  }
+                })}
+              />
+              <Grid item xs={6}>
+                <FormTextField 
+                  {...makeFieldProps({
+                    name: 'lat',
+                    label: '위도',
+                    extraFieldProps: {
+                      InputProps: {
+                        readOnly: true,
+                      }
+                    }
+                  })}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <FormTextField 
+                  {...makeFieldProps({
+                    name: 'lng',
+                    label: '경도',
+                    extraFieldProps: {
+                      InputProps: {
+                        readOnly: true,
+                      }
+                    }
+                  })}
+                />
+              </Grid>
+              {
+                (aptitudeTable==='')?'':<div className={classes.aptitudeTableDiv} dangerouslySetInnerHTML={ {__html: aptitudeTable} }></div>
+              }
+
+              <FormTextField 
+                {...makeFieldProps({
+                  name: 'price',
+                  label: '대표 가격',
+                  extraFieldProps: {
+                    InputProps:{
+                      endAdornment:<InputAdornment position="end">원</InputAdornment>
+                    }
+                  }
+                })}
               />
               <FormTextField 
-                name='address'
-                controllerProps={{
-                  ...baseControllerProps, 
-                }}
-                fieldProps={{
-                  ...baseFieldProps({keyword:'address', label:'재배지 주소'}),
-                }}
-              />
-              <FormTextField 
-                name='price'
-                controllerProps={{
-                  ...baseControllerProps, 
-                }}
-                fieldProps={{
-                  ...baseFieldProps({keyword:'price', label:'대표 가격'}),
-                }}
-              />
-              <FormTextField 
-                name='description'
-                controllerProps={{
-                  ...baseControllerProps, 
-                }}
-                fieldProps={{
-                  ...baseFieldProps({keyword:'description', label:'상품 설명'}),
-                }}
+                {...makeFieldProps({
+                  name: 'description',
+                  label: '상품 설명',
+                })}
               />
             </Grid>
             <Grid item xs={6}>
               <FieldArray 
-                {...{parentName:'images', control}}
-                handleParent={handleImage}
+                {...{
+                  parentName: 'images', 
+                  handleReset: handleResetImages,
+                  control}}
                 parentFields={[
                   {
                     gridProps:{
-                      xs: 3,
+                      xs: 4,
                     },
                     render:({parentIndex, row})=>(
                       <FormTextField
-                        name={`images[${parentIndex}].image_type`}
-                        controllerProps={{...baseControllerProps}}
-                        fieldProps={{
-                          select: true,
-                          ...baseFieldProps({keyword:'image_type', label:'이미지 용도'}),
-                          defaultValue: 'content',
-                        }}
+                        {...makeFieldProps({
+                          name: `images[${parentIndex}].image_type`,
+                          label: '이미지 용도',
+                          extraControllerProps: {
+                            defaultValue: row.image_type || 'content',
+                          },
+                          extraFieldProps: {
+                            select: true,
+                          }
+                        })}
                       >
                         <MenuItem value='top'>대표이미지</MenuItem>
                         <MenuItem value='content'>상품상세</MenuItem>
@@ -262,58 +359,37 @@ export default (props)=>{
                     gridProps:{
                       xs: true,
                     },
-                    render:({parentIndex, row})=>(
-                      <FormTextField 
-                        name={`images[${parentIndex}].image`}
-                        controllerProps={{...baseControllerProps}}
-                        fieldProps={{
-                          type: 'file',
-                          inputProps: {
-                            accept: 'image/jpg,impge/png,image/jpeg',
-                          },
-                          ...baseFieldProps({keyword:'image'}),
-                        }}
-                      />
-                    )
-                  },
-                  {
-                    gridProps:{
-                      xs: 1,
-                    },
-                    render:({remove, parentIndex})=>(
-                      <IconButton color="secondary" onClick={handleImage.removeParent({remove})(parentIndex)} aria-label="delete">
-                        <DeleteIcon />
-                      </IconButton>
-                    ),
-                  },
-                ]}
-                parentButtons={[
-                  {
-                    gridProps:{
-                      xs: true,
-                    },
-                    render: ({append})=>(
-                      <Button color="success" size="lg" variant='outlined' onClick={handleImage.appendParent({append})}>
-                        이미지 추가
-                      </Button>
-                    ),
-                  },
-                  {
-                    gridProps:{
-                      xs: true,
-                    },
-                    render: ()=>(
-                      <Button color="danger" size="lg" variant='outlined' onClick={handleImage.clearParents}>
-                        모두 삭제
-                      </Button>
-                    ),
+                    render:({parentIndex})=>renderImageField(`images[${parentIndex}].image`)
                   },
                 ]}
               />
 
+                      {/*
+                      <input ref={register} type="file" name={`images[${parentIndex}].image`} accept='image/jpg,impge/png,image/jpeg' />
+
+                        // <FormTextField 
+                        //   {...makeFieldProps({
+                        //     name: `images[${parentIndex}].image`,
+                        //     // label: '이미지 용도',
+                        //     extraControllerProps: {
+                        //       defaultValue: row.image,
+                        //     },
+                        //     extraFieldProps: {
+                        //       type: 'file',
+                        //       inputProps: {
+                        //         accept: 'image/jpg,impge/png,image/jpeg',
+                        //         onChange: onFileUpload,
+                        //       },
+                        //     }
+                        //   })}
+                        // />
+                      */}
+
               <FieldArray 
-                {...{parentName:'options', control}}
-                handleParent={handleOption}
+                {...{
+                  parentName: 'options', 
+                  handleReset: handleResetOptions,
+                  control}}
                 parentFields={[
                   {
                     gridProps:{
@@ -321,11 +397,13 @@ export default (props)=>{
                     },
                     render:({parentIndex, row})=>(
                       <FormTextField 
-                        name={`options[${parentIndex}].volumn`}
-                        controllerProps={{...baseControllerProps}}
-                        fieldProps={{
-                          ...baseFieldProps({keyword:'volumn', label:'용량'}),
-                        }}
+                        {...makeFieldProps({
+                          name: `options[${parentIndex}].volumn`,
+                          label: '판매 용량',
+                          extraControllerProps: {
+                            defaultValue: row.volumn,
+                          },
+                        })}
                       />
                     )
                   },
@@ -335,45 +413,20 @@ export default (props)=>{
                     },
                     render:({parentIndex, row})=>(
                       <FormTextField 
-                        name={`options[${parentIndex}].price`}
-                        controllerProps={{...baseControllerProps}}
-                        fieldProps={{
-                          ...baseFieldProps({keyword:'price', label:'가격'}),
-                        }}
+                        {...makeFieldProps({
+                          name: `options[${parentIndex}].price`,
+                          label: '옵션 가격',
+                          extraControllerProps: {
+                            defaultValue: row.price,
+                          },
+                          extraFieldProps: {
+                            InputProps:{
+                              endAdornment:<InputAdornment position="end">원</InputAdornment>
+                            }
+                          }
+                        })}
                       />
                     )
-                  },
-                  {
-                    gridProps:{
-                      xs: 2,
-                    },
-                    render:({remove, parentIndex})=>(
-                      <IconButton color="secondary" onClick={handleOption.removeParent({remove})(parentIndex)} aria-label="delete">
-                        <DeleteIcon />
-                      </IconButton>
-                    ),
-                  },
-                ]}
-                parentButtons={[
-                  {
-                    gridProps:{
-                      xs: true,
-                    },
-                    render: ({append})=>(
-                      <Button color="success" size="lg" variant='outlined' onClick={handleOption.appendParent({append})}>
-                        옵션 추가
-                      </Button>
-                    ),
-                  },
-                  {
-                    gridProps:{
-                      xs: true,
-                    },
-                    render: ()=>(
-                      <Button color="danger" size="lg" variant='outlined' onClick={handleOption.clearParents}>
-                        모두 삭제
-                      </Button>
-                    ),
                   },
                 ]}
               />
@@ -381,7 +434,7 @@ export default (props)=>{
           </Grid>
 
           <Box display='flex' justifyContent="flex-end" mt={10}>
-            <Button type='submit' color="primary" size="lg" variant='contained'>
+            <Button type='submit' color="primary" size="large" variant='contained'>
               저장
             </Button>
           </Box>
