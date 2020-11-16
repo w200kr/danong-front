@@ -2,15 +2,29 @@ import React from "react";
 import { useFieldArray } from "react-hook-form";
 
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import NestedArray from "components/Atoms/NestedFieldArray/NestedFieldArray.js";
 
-export default ({ parentName, parentFields, parentButtons, childName, childFields, childButtons, control, ...rest }) => {
+export default (props) => {
+  const { parentName, parentFields, childName, childFields, childButtons, control, handleReset, appendButton=true, clearButton=true, ...rest } = props;
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: parentName, // unique name for your Field Array
     // keyName: "id", default to "id", you can change the key name
   });
+
+  const handleParent = {
+    appendParent: ()=>{
+      append({})
+    },
+    removeParent: index => ()=>{
+      remove(index)
+    },
+    clearParents: handleReset,
+  }
 
   return (
     <Grid container spacing={1}>
@@ -21,7 +35,6 @@ export default ({ parentName, parentFields, parentButtons, childName, childField
               {parentFields.map((field, index)=>{
                 return (
                   <Grid item {...field.gridProps} key={index}>
-
                     {
                       field.render({
                         parentIndex, remove, row
@@ -30,6 +43,12 @@ export default ({ parentName, parentFields, parentButtons, childName, childField
                   </Grid>
                 );
               })}
+
+              <Grid item key={parentIndex}>
+                <IconButton color="secondary" onClick={handleParent.removeParent(parentIndex)} aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              </Grid>
             </Grid>
 
             {(childName)?(
@@ -45,13 +64,20 @@ export default ({ parentName, parentFields, parentButtons, childName, childField
 
       <Grid container item justify='flex-end' spacing={1}>
         {
-          parentButtons.map((button, index)=>
-            <Grid item key={index}>
-              {button.render({
-                append
-              })}
-            </Grid>
-          ) 
+          (appendButton)?(
+            <Grid item>
+              <Button color="default" size="large" variant='outlined' onClick={handleParent.appendParent}>
+                추가
+              </Button>
+            </Grid>):''
+        }
+        {
+          (clearButton)?(
+            <Grid item>
+              <Button color="secondary" size="large" variant='outlined' onClick={handleParent.clearParents}>
+                초기화
+              </Button>
+            </Grid>):''
         }
       </Grid>
     </Grid>
