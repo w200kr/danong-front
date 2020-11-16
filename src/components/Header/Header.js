@@ -1,5 +1,6 @@
 import React from "react";
-// nodejs library that concatenates classes
+import { useHistory } from "react-router-dom";
+
 import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
@@ -56,7 +57,8 @@ export default function Header(props) {
     //     .classList.remove(classes[changeColorOnScroll.color]);
     // }
   };
-  const { color, rightLinks=<DefaultRightLinks />, leftLinks, brand, fixed, absolute, history } = props;
+  const { color, rightLinks=<DefaultRightLinks />, leftLinks, brand, fixed, absolute } = props;
+  const history = useHistory();
   const appBarClasses = classNames({
     // [classes.appBar]: true,
     // [classes[color]]: color,
@@ -65,7 +67,7 @@ export default function Header(props) {
   });
   const brandComponent = <Button 
     className={classes.title} 
-    // onClick={()=>history.push('/')}
+    onClick={()=>history.push('/')}
   >
     {brand}
   </Button>
