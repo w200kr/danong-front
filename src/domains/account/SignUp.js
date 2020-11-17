@@ -30,8 +30,7 @@ const PageSignUp = (props)=>{
 
   const maxWidth = 'xs';
 
-
-  // const {signUp, isAuthenticated} = React.useContext(AuthContext) 
+  const {signUp, isAuthenticated} = React.useContext(AuthContext) 
 
   const [openDialogs, setOpenDialogs] = React.useState({
     terms: false,
@@ -45,10 +44,10 @@ const PageSignUp = (props)=>{
   const watchPassword = watch('password');
 
   React.useEffect(() => {
-    // if(isAuthenticated){
-    //   alert('로그인 상태입니다.')
-    //   history.push('/')
-    // }
+    if(isAuthenticated){
+      alert('로그인 상태입니다.')
+      history.push('/')
+    }
   }, []);
 
   const baseControllerProps = {
@@ -90,10 +89,10 @@ const PageSignUp = (props)=>{
           <Grid item xs={12} sm={12} md={12}>
               <Typography variant='h5' align='center' gutterBottom>회원가입</Typography>
               <form onSubmit={
-                // handleSubmit(signUp)
-                handleSubmit(data=>{
-                  console.log(data)
-                })
+                handleSubmit(signUp)
+                // handleSubmit(data=>{
+                //   console.log(data)
+                // })
               }>
                 <Grid container spacing={1}>
                   <Grid item xs={12} sm={12} md={12}>
@@ -101,11 +100,11 @@ const PageSignUp = (props)=>{
                       name='category'
                       controllerProps={{...baseControllerProps}}
                       labelText='분류'
-                      // helperText='본인의 분류를 선택해주세요.'
+                      helperText={(errors?.category&&true)?'회원 분류를 선택해주세요.':''}
                       error= {errors?.category&&true}
                       options={[
-                        {value:"seller", label:"판매자"},
-                        {value:"buyer", label:"구매자"},
+                        {value:"S", label:"판매자"},
+                        {value:"B", label:"구매자"},
                       ]}
                     />
 
@@ -115,19 +114,19 @@ const PageSignUp = (props)=>{
                         ...baseControllerProps, 
                         rules: {
                           ...baseControllerProps.rules,
-                          pattern: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
+                          // pattern: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
+                          pattern: /^[a-z]+[a-z0-9]{5,19}$/,
                         },
                       }}
                       fieldProps={{
-                        type: 'email',
-                        label: '이메일',
+                        label: '아이디',
                         variant: 'outlined',
                         InputProps: {
                           endAdornment: (<InputAdornment position="end">
                               <PermIdentity className={classes.inputIconsColor} />
                             </InputAdornment>),
                         },
-                        helperText: (errors?.username&&true)?"올바른 이메일 주소가 아닙니다.":'',
+                        helperText: (errors?.username&&true)?"아이디를 입력해주세요. (영단어로 시작하는 최소 6글자, 최대 20글자)":'',
                         error: errors?.username&&true,
                       }}
                     />
@@ -178,6 +177,68 @@ const PageSignUp = (props)=>{
                         error: errors?.password_confirm&&true,
                       }}
                     />
+
+
+                    <FormTextField 
+                      name='email'
+                      controllerProps={{
+                        ...baseControllerProps, 
+                        rules: {
+                          ...baseControllerProps.rules,
+                          pattern: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
+                        },
+                      }}
+                      fieldProps={{
+                        type: 'email',
+                        label: '이메일',
+                        variant: 'outlined',
+                        InputProps: {
+                          endAdornment: (<InputAdornment position="end">
+                              <PermIdentity className={classes.inputIconsColor} />
+                            </InputAdornment>),
+                        },
+                        helperText: (errors?.email&&true)?"올바른 이메일 주소가 아닙니다.":'',
+                        error: errors?.email&&true,
+                      }}
+                    />
+
+                    <FormTextField 
+                      name='tel'
+                      controllerProps={{...baseControllerProps, rules:{
+                        ...baseControllerProps.rules,
+                        pattern: /^01\d{8,9}$/,
+                      }}}
+                      fieldProps={{
+                        label: '연락처',
+                        variant: 'outlined',
+                        InputProps: {
+                          endAdornment: (<InputAdornment position="end">
+                              <PermIdentity className={classes.inputIconsColor} />
+                            </InputAdornment>),
+                        },
+                        helperText: (errors?.tel&&true)?"핸드폰 연락처를 입력해주세요. (ex. 01022223333)":'',
+                        error: errors?.tel&&true,
+                      }}
+                    />
+
+                    <FormTextField 
+                      name='name'
+                      controllerProps={{...baseControllerProps}}
+                      fieldProps={{
+                        label: '이름',
+                        variant: 'outlined',
+                        InputProps: {
+                          endAdornment: (<InputAdornment position="end">
+                              <PermIdentity className={classes.inputIconsColor} />
+                            </InputAdornment>),
+                        },
+                        helperText: (errors?.name&&true)?"본인의 실명을 입력해주세요. (ex. 홍길동)":'',
+                        error: errors?.name&&true,
+                      }}
+                    />
+
+
+
                   </Grid>
                     <Typography variant="subtitle2" className={classes.divider} gutterBottom>
                       회원 가입시, <Link href='#' onClick={handleOpenDialog({terms:true})}>이용약관</Link>과 <Link href='#' onClick={handleOpenDialog({privacy:true})}>개인정보취급정책</Link>에 동의한 것으로 간주됩니다.

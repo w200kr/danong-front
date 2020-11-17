@@ -19,6 +19,7 @@ import FieldArray from "components/Atoms/FieldArray/FieldArray.js";
 import Header from "components/Header/Header.js";
 import Footer from "components/Footer/Footer.js";
 
+import AuthContext from 'contexts/Auth/AuthContext.js';
 import {Fetch} from 'utils/Fetch.js'
 
 import styles from "./Add.style.js";
@@ -28,42 +29,25 @@ const useStyles = makeStyles(styles);
 export default (props)=>{
   const classes = useStyles();
   const {history, ...rest } = props;
-
+  const {isAuthenticated, authUser} = React.useContext(AuthContext) 
 
   const [categories, setCategories] = React.useState([])
   const [inSearch, setInSearch] = React.useState(false)
   const [aptitudeTable, setAptitudeTable] = React.useState('')
-  // const [files, setFiles] = React.useState([])
-
-  // const onFileUpload = (event) => {
-  //   event.preventDefault();
-  //   // Get the file Id
-  //   let id = event.target.id;
-  //   // Create an instance of FileReader API
-  //   let file_reader = new FileReader();
-  //   // Get the actual file itself
-  //   let file = event.target.files[0];
-  //   file_reader.onload = () => {
-  //     // After uploading the file
-  //     // appending the file to our state array
-  //     // set the object keys and values accordingly
-  //     setFiles([...files, { file_id: id, uploaded_file: file_reader.result }]);
-  //   };
-  //   // reading the actual uploaded file
-  //   file_reader.readAsDataURL(file);
-  // }
-
-
 
   React.useEffect(() => {
-    // if(isAuthenticated){
-    //   alert('로그인 상태입니다.')
-    //   history.push('/')
-    // }else{
+    console.log(authUser)
+    if(isAuthenticated && authUser['category']==='S'){
       Fetch.get('/api/categories/depth').then(res=>{
         setCategories(res)
       })
-    // }
+    }else if(isAuthenticated && authUser['category']!=='S'){
+      alert('판매자 회원만이 상품을 등록할 수 있습니다.')
+      history.push('/profile')
+    }else{
+      alert('판매자 회원만이 상품을 등록할 수 있습니다.')
+      history.push('/signup')
+    }
   }, []);
 
   const defaultImage = {image_type:'', image:''}
@@ -172,7 +156,6 @@ export default (props)=>{
       />
       <form onSubmit={handleSubmit(data=>{
         console.log(data)
-        // console.log(files)
 
         const formData = new FormData()
 

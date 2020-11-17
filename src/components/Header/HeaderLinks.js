@@ -9,6 +9,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import {List, ListItem, ListItemText} from '@material-ui/core'
 
+import AuthContext from 'contexts/Auth/AuthContext.js';
+
 const useStyles = makeStyles((theme)=>({
     links: {
         display: 'flex',
@@ -30,6 +32,7 @@ function ListItemLink(props) {
 const DefaultRightLinks = ()=>{
     const classes = useStyles();
     const history = useHistory();
+    const {isAuthenticated, logout} = React.useContext(AuthContext) 
 
     return (
         <List className={classes.links}>
@@ -42,12 +45,19 @@ const DefaultRightLinks = ()=>{
             <ListItemLink onClick={()=>history.push('/add')}>
                 <ListItemText primary="재료등록" />
             </ListItemLink>
-            <ListItemLink onClick={()=>history.push('/profile')}>
-                <ListItemText primary="내정보" />
-            </ListItemLink>
-            <ListItemLink onClick={()=>history.push('/login')}>
-                <ListItemText primary="로그인" />
-            </ListItemLink>
+            {(isAuthenticated)?
+                <React.Fragment>
+                    <ListItemLink onClick={()=>history.push('/profile')}>
+                        <ListItemText primary="내정보" />
+                    </ListItemLink>
+                    <ListItemLink onClick={logout}>
+                        <ListItemText primary="로그아웃" />
+                    </ListItemLink>
+                </React.Fragment>
+            :
+                <ListItemLink onClick={()=>history.push('/login')}>
+                    <ListItemText primary="로그인" />
+                </ListItemLink>}
         </List>
     )
 }

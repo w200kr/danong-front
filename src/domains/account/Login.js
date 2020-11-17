@@ -28,12 +28,12 @@ import styles from "./Login.style.js";
 const useStyles = makeStyles(styles);
 
 const PageLogin = (props)=>{
-  // const {login, isAuthenticated} = React.useContext(AuthContext) 
+  const {login, isAuthenticated} = React.useContext(AuthContext) 
   // const {login} = React.useContext(AuthContext) 
-  const login = ()=>{
-    alert('로그인이 완료되었습니다.')
-    history.push('/')
-  }
+  // const login = ()=>{
+    // alert('로그인이 완료되었습니다.')
+    // history.push('/')
+  // }
 
   const classes = useStyles();
   const { history } = props;
@@ -43,10 +43,10 @@ const PageLogin = (props)=>{
   });
 
   React.useEffect(() => {
-    // if(isAuthenticated){
-    //   alert('로그인 상태입니다.')
-    //   history.push('/')
-    // }
+    if(isAuthenticated){
+      alert('로그인 상태입니다.')
+      history.push('/')
+    }
   }, []);
 
   const baseControllerProps = {
@@ -86,29 +86,30 @@ const PageLogin = (props)=>{
                 controllerProps={{
                   ...baseControllerProps, 
                   rules: {
-                    required: true,
-                    pattern: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
+                    ...baseControllerProps.rules,
+                    // pattern: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
+                    pattern: /^[a-z]+[a-z0-9]{5,19}$/,
                   },
                 }}
                 fieldProps={{
-                  type: 'email',
-                  label: '이메일',
+                  label: '아이디',
                   variant: 'outlined',
                   InputProps: {
                     endAdornment: (<InputAdornment position="end">
                         <PermIdentity className={classes.inputIconsColor} />
                       </InputAdornment>),
                   },
-                  helperText: (errors?.username&&true)?"올바른 이메일 주소가 아닙니다.":'',
+                  helperText: (errors?.username&&true)?"아이디를 입력해주세요. (영단어로 시작하는 최소 6글자, 최대 20글자)":'',
                   error: errors?.username&&true,
                 }}
               />
+
               <FormTextField 
                 name='password'
                 controllerProps={{
                   ...baseControllerProps, 
                   rules: {
-                    required: true,
+                    ...baseControllerProps.rules,
                     pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10,}$/,
                   },
                 }}

@@ -9,7 +9,7 @@ const AuthProvider = ({ children, history }) => {
   const prevAuth = window.localStorage.getItem('isAuthenticated') || false;
   const prevAuthUser = JSON.parse( window.localStorage.getItem('user') ) || null;
 
-  const login = ({username, password})=>Fetch.post('/api-auth/', {
+  const login = ({username, password})=>Fetch.post('/api/login/', {
     'username': username,
     'password': password,
   }).then(res=>{
@@ -25,7 +25,7 @@ const AuthProvider = ({ children, history }) => {
     window.localStorage.clear()
   };
 
-  const signUp = data => Fetch.post('/api/v1/signup/', data).then(res=>history.push('/login'));
+  const signUp = data => Fetch.post('/api/signup/', data).then(res=>history.push('/login'));
 
   //state초기화 객체 입니다.
   const initialState = {

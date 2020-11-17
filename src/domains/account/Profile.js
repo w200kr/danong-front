@@ -18,6 +18,7 @@ import FormRadioField from 'components/Atoms/FormRadioField/FormRadioField.js'
 import Header from "components/Header/Header.js";
 import Footer from "components/Footer/Footer.js";
 
+import AuthContext from 'contexts/Auth/AuthContext.js';
 import {Fetch} from 'utils/Fetch.js'
 
 import styles from "./Profile.style.js";
@@ -27,18 +28,19 @@ const useStyles = makeStyles(styles);
 export default (props)=>{
   const classes = useStyles();
   const {history, ...rest } = props;
+  const {isAuthenticated, authUser} = React.useContext(AuthContext) 
 
   const [categories, setCategories] = React.useState([])
 
   React.useEffect(() => {
-    // if(isAuthenticated){
-    //   alert('로그인 상태입니다.')
-    //   history.push('/')
-    // }else{
+    if(!isAuthenticated){
+      alert('먼저 로그인을 진행해주셔야 합니다.')
+      history.push('/login')
+    }else{
       Fetch.get('/api/categories/depth').then(res=>{
         setCategories(res)
       })
-    // }
+    }
   }, []);
 
 
@@ -152,15 +154,27 @@ export default (props)=>{
               })}
             />
             <FormRadioField
-              name='category'
-              controllerProps={{...baseControllerProps}}
-              formControlProps={{className:classes.categoryRadio}}
-              labelText='이용자 분류'
-              error= {errors?.category&&true}
-              options={[
-                {value:"seller", label:"판매자"},
-                {value:"buyer", label:"구매자"},
-              ]}
+              {...makeFieldProps({
+                name: 'category',
+                label: '회원 분류',
+                extraControllerProps:{
+                  defaultValue: authUser.category,
+                },
+                extraFieldProps: {
+                  formControlProps:{
+                    className:classes.categoryRadio,
+                  },
+                },
+                options:[
+                  {value:"seller", label:"판매자"},
+                  {value:"buyer", label:"구매자"},
+                ]
+              })}
+              // name='category'
+              // controllerProps={{...baseControllerProps}}
+              // formControlProps={{className:classes.categoryRadio}}
+              // labelText='이용자 분류'
+              // error= {errors?.category&&true}
             />
 
             {(watchCategory==='seller')?<React.Fragment>
