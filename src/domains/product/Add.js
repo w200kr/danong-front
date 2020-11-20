@@ -123,6 +123,8 @@ export default (props)=>{
       setValue('lng', res['lng'])
       setValue('lat', res['lat'])
       setAptitudeTable(res['aptitude_table'])
+    }).catch(()=>{
+      alert('해당 재배지를 조회할 수 없습니다.')
     }).finally(() => {
       // console.log('finally')
       setInSearch(false)

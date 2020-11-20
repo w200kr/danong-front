@@ -19,6 +19,12 @@ const searchStyle = theme => {
       // height: '100vh',
       // backgroundColor: 'yellow'
     },
+    mainImageBox: {
+      padding: 30,
+    },
+    mainImage: {
+      margin: 'auto',
+    },
     slider: {
       height: 410,
       width: 410,

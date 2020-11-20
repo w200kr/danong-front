@@ -77,6 +77,8 @@ function NaverMapAPI(props){
     });
   },[products])
 
+  console.log(center)
+
   return (
     <NaverMap
       // mapDivId={'maps-getting-started-uncontrolled'} // default: react-naver-map
@@ -85,8 +87,15 @@ function NaverMapAPI(props){
         height: '100%' // 네이버지도 세로 길이
       }}
       // defaultCenter={center} // 지도 초기 위치
-      center={center}
-      onCenterChanged={handleCenter}
+      // center={center}
+      onCenterChanged={props=>{
+        console.log('onCenterChanged')
+        console.log(props)
+      }}
+      onBoundsChanged={(props)=>{
+        console.log('onBoundsChanged')
+        console.log(props)
+      }}
       zoomControl={true}
       zoomControlOptions={{
         position: navermaps.Position.TOP_LEFT,

@@ -24,6 +24,8 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 import Rating from '@material-ui/lab/Rating';
 
+import {Fetch} from 'utils/Fetch.js'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     // backgroundColor: 'yellow',
@@ -47,10 +49,9 @@ export default function ProductCard(props) {
   const {product, history} = props;
   const classes = useStyles();
 
-  const [dib, setDib] = React.useState(false);
+  const [dib, setDib] = React.useState(product.is_dibbed);
 
-  console.log(product)
-
+  // console.log(product)
   // ["id", "seller", "images", "options", "name", "address", "price", "view_count", "description", "thumbnail", "is_hide", "lat", "lng", "created", "updated", "category", "history"]
 
   // const preventDefault = (event) => event.preventDefault();
@@ -61,7 +62,15 @@ export default function ProductCard(props) {
 
   const handleToggleDib = (e)=>{
     e.stopPropagation()
-    setDib(!dib)
+    Fetch.post('/api/products/dib/',{
+      product_id: product.id
+    }).then(res=>{
+      if (res.status==='ok'){
+        setDib(!dib)
+      }else{
+        alert('에러 발생')
+      }
+    })
   }
 
   return (
@@ -77,7 +86,7 @@ export default function ProductCard(props) {
           aria-label="search"
           onClick={handleToggleDib}
           edge="end"
-          size='default'
+          size='small'
           fontSize="default"
           style={{
             position: 'absolute',
@@ -128,8 +137,8 @@ export default function ProductCard(props) {
               justify="space-between"
             >
               <Box display='flex'>
-                <Rating value={4.2} size="small" readOnly />
-                <Typography>(352)</Typography>
+                <Rating value={product.rating_avg} size="small" readOnly />
+                <Typography>({product.review_num})</Typography>
               </Box>
             </Grid>
           }

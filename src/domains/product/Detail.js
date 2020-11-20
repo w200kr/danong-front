@@ -22,7 +22,6 @@ import FormTextField from 'components/Atoms/FormTextField/FormTextField.js'
 import Header from "components/Header/Header.js";
 import Footer from "components/Footer/Footer.js";
 
-
 import styles from "./Detail.style.js";
 
 const useStyles = makeStyles(styles);
@@ -89,28 +88,28 @@ const Detail = (props)=> {
       >
         <Grid className={classes.summary} item xs={12} container>
           <Grid item xs={7}>
-            <Box display='flex' flexDirection='column' justifyContent='center'>
+            <Box className={classes.mainImageBox} display='flex' flexDirection='column' justifyContent='center'>
               <Slider
                 asNavFor={nav2}
                 ref={slider => (slider1.current = slider)}
               >
                 <div>
-                  <img src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
+                  <img className={classes.mainImage} src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
                 </div>
                 <div>
-                  <img src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
+                  <img className={classes.mainImage} src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
                 </div>
                 <div>
-                  <img src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
+                  <img className={classes.mainImage} src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
                 </div>
                 <div>
-                  <img src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
+                  <img className={classes.mainImage} src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
                 </div>
                 <div>
-                  <img src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
+                  <img className={classes.mainImage} src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
                 </div>
                 <div>
-                  <img src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
+                  <img className={classes.mainImage} src="https://dummyimage.com/410x410/d3d3d3/000000" alt="" />
                 </div>
               </Slider>
               <Slider
