@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme)=>({
     links: {
         display: 'flex',
 
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down('sm')]: {
             flexDirection: 'column',
         },
         '& *':{
