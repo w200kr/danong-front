@@ -9,20 +9,40 @@ const AuthProvider = ({ children, history }) => {
   const prevAuth = window.localStorage.getItem('isAuthenticated') || false;
   const prevAuthUser = JSON.parse( window.localStorage.getItem('user') ) || null;
 
-  const login = ({username, password})=>Fetch.post('/api/login/', {
-    'username': username,
-    'password': password,
-  }).then(res=>{
+  const homeRedirect = ()=>history.push('/')
+  const saveUserInfo = res=>{
+    // console.log('saveUserInfo')
+    // console.log(res)
+    // console.log('saveUserInfo')
+
+    window.localStorage.clear()
     setValue({...value, authUser: res, isAuthenticated: true})
     window.localStorage['isAuthenticated'] = true;
     window.localStorage.setItem('user', JSON.stringify(res));
-    history.push('/')
-  });
+  }
 
+  const login = ({username, password})=>Fetch.post('/api/login/', {
+    'username': username,
+    'password': password,
+  }).then(saveUserInfo).then(homeRedirect);
+
+  const kakaoLogin = ({response, profile})=>{
+    // console.log(profile)
+
+    const data = {
+      kakao_id: profile.id,
+      email: profile.properties?.email,
+      name: profile.properties?.nickname,
+      // tel
+    }
+
+    Fetch.post('/api/login/kakao/', data).then(saveUserInfo).then(homeRedirect);
+  }
   const logout = ()=>{
     alert('로그아웃 되었습니다.')
     setValue({...value, authUser: null, isAuthenticated: false})
     window.localStorage.clear()
+    history.push('/')
   };
 
   const signUp = data => Fetch.post('/api/signup/', data).then(res=>history.push('/login'));
@@ -31,7 +51,9 @@ const AuthProvider = ({ children, history }) => {
   const initialState = {
     isAuthenticated: prevAuth,
     authUser: prevAuthUser,
+    saveUserInfo,
     login,
+    kakaoLogin,
     logout,
     signUp,
   };
