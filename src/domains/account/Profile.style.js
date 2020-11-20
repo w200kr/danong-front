@@ -13,6 +13,11 @@ export default theme => {
     title:{
       marginBottom: 30,
     },
+    avatar: {
+      width: 150,
+      height: 150,
+      marginBottom: 20,
+    },
     categoryRadio:{
       marginTop: 20,
       display: 'flex',

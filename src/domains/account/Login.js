@@ -28,7 +28,7 @@ import styles from "./Login.style.js";
 const useStyles = makeStyles(styles);
 
 const PageLogin = (props)=>{
-  const {login, isAuthenticated} = React.useContext(AuthContext) 
+  const {login, kakaoLogin, isAuthenticated} = React.useContext(AuthContext) 
   // const {login} = React.useContext(AuthContext) 
   // const login = ()=>{
     // alert('로그인이 완료되었습니다.')
@@ -152,7 +152,7 @@ const PageLogin = (props)=>{
           <Grid item>
             <KakaoLogin
               token='cf84b262c8487aa0d2a70906eaaf49e4'
-              onSuccess={login}
+              onSuccess={kakaoLogin}
               // onSuccess={result =>{
                 // alert('onSuccess')
               //   alert('로그인이 완료되었습니다.')

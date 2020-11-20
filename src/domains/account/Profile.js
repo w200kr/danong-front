@@ -4,10 +4,11 @@ import classNames from "classnames";
 import { useForm, Controller } from "react-hook-form";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import {Box, Container, Grid, InputAdornment, Button, IconButton, Typography, MenuItem, CircularProgress, Input, TextField} from '@material-ui/core';
+import {Box, Container, Grid, InputAdornment, Button, IconButton, Typography, MenuItem, CircularProgress, Input, TextField, Avatar} from '@material-ui/core';
 
 import SearchIcon from '@material-ui/icons/Search';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 // import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
 import Logo from 'components/Atoms/Logo/Logo.js'
@@ -28,9 +29,19 @@ const useStyles = makeStyles(styles);
 export default (props)=>{
   const classes = useStyles();
   const {history, ...rest } = props;
-  const {isAuthenticated, authUser} = React.useContext(AuthContext) 
+  const {isAuthenticated, authUser, saveUserInfo} = React.useContext(AuthContext) 
 
+  const profileUrl = `/api/profiles/${authUser.profile_id}/`;
+
+  // const [profile, setProfile] = React.useState({})
   const [categories, setCategories] = React.useState([])
+
+  const afterResponse = res=>{
+    saveUserInfo(res)
+    // setProfile(res)
+
+    return res
+  }
 
   React.useEffect(() => {
     if(!isAuthenticated){
@@ -40,6 +51,7 @@ export default (props)=>{
       Fetch.get('/api/categories/depth').then(res=>{
         setCategories(res)
       })
+      Fetch.get(profileUrl).then(afterResponse)//.then(saveUserInfo)
     }
   }, []);
 
@@ -72,7 +84,7 @@ export default (props)=>{
     name: name,
     controllerProps: {
       control: control,
-      defaultValue: '',
+      defaultValue: authUser[name] || '',
       rules: {
         required: true,
       },
@@ -93,6 +105,7 @@ export default (props)=>{
       className={classes.field}
       inputRef={register}
       type= 'file'
+      defaultValue=''
       inputProps={{
         accept:'image/jpg,impge/png,image/jpeg',
       }}
@@ -119,9 +132,18 @@ export default (props)=>{
       />
       <form className={classes.form} onSubmit={handleSubmit(data=>{
         console.log(data)
-        // Fetch.post('/api/profile/', data).then(res=>{
-        //   console.log(res)
-        // })
+
+        const formData = new FormData()
+
+        Object.keys(data).map(key=>{
+          formData.append(key, data[key])
+        })
+        formData.set("thumbnail", data?.thumbnail[0] || '')
+        formData.append('user', authUser.user)
+
+        Fetch.put(profileUrl, formData).then(afterResponse).then(()=>{
+          alert('저장되었습니다.')
+        })
       })}>
         <Container
           className={classes.container} 
@@ -140,11 +162,18 @@ export default (props)=>{
             justify="center"
             alignItems="flex-start"
           >
+            {/*<Avatar className={classes.pink}>
+                          <AccountCircleIcon />
+                        </Avatar>*/}
+            <Avatar className={classes.avatar} src={authUser.thumbnail_url} />
             {renderImageField('thumbnail')}
             <FormTextField 
               {...makeFieldProps({
                 name: 'name',
                 label: '실명',
+                // extraControllerProps: {
+                //   defaultValue: profile["name"],
+                // }
               })}
             />
             <FormTextField 
@@ -154,30 +183,21 @@ export default (props)=>{
               })}
             />
             <FormRadioField
-              {...makeFieldProps({
-                name: 'category',
-                label: '회원 분류',
-                extraControllerProps:{
-                  defaultValue: authUser.category,
-                },
-                extraFieldProps: {
-                  formControlProps:{
-                    className:classes.categoryRadio,
-                  },
-                },
-                options:[
-                  {value:"seller", label:"판매자"},
-                  {value:"buyer", label:"구매자"},
-                ]
-              })}
-              // name='category'
-              // controllerProps={{...baseControllerProps}}
-              // formControlProps={{className:classes.categoryRadio}}
-              // labelText='이용자 분류'
-              // error= {errors?.category&&true}
+              name='category'
+              controllerProps={{
+                ...baseControllerProps,
+                defaultValue: authUser.category,
+              }}
+              formControlProps={{className:classes.categoryRadio}}
+              labelText='회원 분류'
+              error= {errors?.category&&true}
+              options={[
+                {value:"S", label:"판매자"},
+                {value:"B", label:"구매자"},
+              ]}
             />
 
-            {(watchCategory==='seller')?<React.Fragment>
+            {(watchCategory==='S')?<React.Fragment>
               <Grid item xs={6}>
                 <FormTextField
                   {...makeFieldProps({
