@@ -186,13 +186,14 @@ const Fetch = {
     },
     put: function (url, data={}, extra_headers={}, options={}){
         if(url===undefined) throw new Error('empty url');
+        const isFormData = data instanceof FormData;
         const {fullUrl, external} = this.makeUrl(url);
-        const cleanedData = this.clean(data);
+        const cleanedData = (isFormData)? data : JSON.stringify(this.clean(data))
 
         return fetch(fullUrl, {
             method: 'PUT',
-            headers: this.getHeaders({extra_headers, external}),
-            body: JSON.stringify(cleanedData),
+            headers: this.getHeaders({extra_headers, external, isFormData}),
+            body: cleanedData,
             ...options,
         }).then(response=>{
             var contentType = response.headers.get('Content-Type');
@@ -202,6 +203,9 @@ const Fetch = {
                     return response.json();
                 }
                 throw new TypeError("Response content type is not json!");
+            }
+            if(contentType && contentType.includes('application/json')) {
+                response.json().then(res=>this.errorAlert(res))
             }
             throw new TypeError("Response is not ok!");
         })
