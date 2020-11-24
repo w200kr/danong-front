@@ -50,7 +50,7 @@ export default (props)=>{
       Fetch.get('/api/categories/depth').then(res=>{
         setCategories(res)
       })
-      Fetch.get(profileUrl).then(afterResponse)//.then(saveUserInfo)
+      // Fetch.get(profileUrl).then(afterResponse)//.then(saveUserInfo)
     }
   }, []);
   React.useEffect(() => {
