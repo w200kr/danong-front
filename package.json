@@ -10,6 +10,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "classnames": "^2.2.6",
+    "core-js": "^3.7.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-app-polyfill": "^2.0.0",
@@ -20,6 +21,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-slick": "^0.27.12",
+    "regenerator-runtime": "^0.13.7",
     "slick-carousel": "^1.8.1"
   },
   "scripts": {
