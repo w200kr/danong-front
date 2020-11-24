@@ -193,7 +193,7 @@ export default (props)=>{
             justify="center"
             alignItems="flex-start"
           >
-            <Grid item xs={6} container>
+            <Grid item xs={12} sm={6} container>
               <Grid item xs={6}>
                 <FormTextField
                   {...makeFieldProps({
@@ -318,7 +318,7 @@ export default (props)=>{
                 })}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <FieldArray 
                 {...{
                   parentName: 'images', 
