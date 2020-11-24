@@ -275,9 +275,8 @@ const Detail = (props)=> {
                     qty: qty,
                     amount: getMainPrice() * qty
                   }
-                  console.log(obj)
-                  // window.localStorage.setItem('checkout', JSON.stringify(obj));
-                  // history.push('/checkout')
+                  window.localStorage.setItem('checkout', JSON.stringify(obj));
+                  history.push('/checkout')
                 }}>
                   구매하기
                 </Button>
