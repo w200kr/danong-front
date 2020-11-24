@@ -117,7 +117,8 @@ export default (props)=>{
   const handleResetImages = ()=>setValue('images', defaultImages)
   const handleResetOptions = ()=>setValue('options', defaultOptions)
 
-  const NamedImageField = ({name, ...rest})=>(
+  // const NamedImageField = ({name, ...rest})=>(
+  const renderImageField = (name)=>(
     <TextField
       className={classes.field}
       inputRef={register({required:true})}
@@ -129,7 +130,6 @@ export default (props)=>{
       error={errors?.[name]&&true}
       variant='outlined'
       fullWidth
-      {...rest}
     />
   )
 
@@ -238,7 +238,7 @@ export default (props)=>{
                   label: '상품명',
                 })}
               />
-              <NamedImageField name='thumbnail' />
+              {renderImageField('thumbnail')}
               <FormTextField 
                 {...makeFieldProps({
                   name: 'address',
@@ -352,7 +352,8 @@ export default (props)=>{
                     gridProps:{
                       xs: true,
                     },
-                    render: ({parentIndex})=> <NamedImageField name={`images[${parentIndex}].image`} error={errors.images?.[parentIndex]?.image&&true} />
+                    render:({parentIndex})=>renderImageField(`images[${parentIndex}].image`)
+                    // render: ({parentIndex})=> <NamedImageField name={`images[${parentIndex}].image`} error={errors.images?.[parentIndex]?.image&&true} />
                   },
                 ]}
               />
