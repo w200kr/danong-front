@@ -12,6 +12,7 @@
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
+    "react-app-polyfill": "^2.0.0",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.9.2",
     "react-kakao-login": "^2.0.2",
@@ -37,6 +38,7 @@
       "not op_mini all"
     ],
     "development": [
+      ">0.2%",
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
