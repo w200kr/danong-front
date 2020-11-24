@@ -11,14 +11,11 @@ const AuthProvider = ({ children, history }) => {
 
   const homeRedirect = ()=>history.push('/')
   const saveUserInfo = res=>{
-    // console.log('saveUserInfo')
-    // console.log(res)
-    // console.log('saveUserInfo')
-
     window.localStorage.clear()
-    setValue({...value, authUser: res, isAuthenticated: true})
+    const newAuthUser = {...value.authUser, ...res}
+    setValue({...value, authUser: newAuthUser, isAuthenticated: true})
     window.localStorage['isAuthenticated'] = true;
-    window.localStorage.setItem('user', JSON.stringify(res));
+    window.localStorage.setItem('user', JSON.stringify(newAuthUser));
   }
 
   const login = ({username, password})=>Fetch.post('/api/login/', {

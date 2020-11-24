@@ -54,6 +54,12 @@ export default (props)=>{
       Fetch.get(profileUrl).then(afterResponse)//.then(saveUserInfo)
     }
   }, []);
+  React.useEffect(() => {
+    if(categories){
+      setValue('large_category', authUser.large_category)
+      setValue('main_crops', authUser.main_crops)
+    }
+  }, [categories]);
 
 
   const { register, handleSubmit, errors, control, watch, reset, setValue } = useForm({
@@ -67,7 +73,7 @@ export default (props)=>{
     control: control,
     defaultValue: '',
     rules: {
-      // required: true,
+      required: true,
     },
   }
 
@@ -202,6 +208,9 @@ export default (props)=>{
                   {...makeFieldProps({
                     name: 'large_category',
                     label: '주판매 작물 대분류',
+                    extraControllerProps:{
+                      defaultValue: '',
+                    },
                     extraFieldProps: {
                       select: true,
 
@@ -222,6 +231,9 @@ export default (props)=>{
                   {...makeFieldProps({
                     name: 'main_crops',
                     label: '세부 분류',
+                    extraControllerProps:{
+                      defaultValue: '',
+                    },
                     extraFieldProps: {
                       select: true,
                     }
@@ -232,7 +244,6 @@ export default (props)=>{
                     categories.reduce((acc, cur) => (
                       [...acc, ...cur.sub_categories]
                     ), []).map(sub_category=>{
-                      console.log(watchLargeCategory)
                       return <MenuItem key={sub_category.id} value={sub_category.id} style={{display:watchLargeCategory===sub_category.large_category?'default':'none'}}>{sub_category.name}</MenuItem>
                     })
                   }
