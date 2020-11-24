@@ -84,7 +84,6 @@ export default (props)=>{
     },
   })
 
-
 // lat
 // lng
 
@@ -113,21 +112,24 @@ export default (props)=>{
     });
   }
 
-  const handleResetImages = ()=>reset({images:[defaultImage]})
-  const handleResetOptions = ()=>reset({images:[defaultOption]})
 
 
-  const renderImageField = (name)=>(
+  const handleResetImages = ()=>setValue('images', defaultImages)
+  const handleResetOptions = ()=>setValue('options', defaultOptions)
+
+  const NamedImageField = ({name, ...rest})=>(
     <TextField
       className={classes.field}
-      inputRef={register}
+      inputRef={register({required:true})}
       type= 'file'
       inputProps={{
         accept:'image/jpg,impge/png,image/jpeg',
       }}
       name={name}
+      error={errors?.[name]&&true}
       variant='outlined'
       fullWidth
+      {...rest}
     />
   )
 
@@ -236,7 +238,7 @@ export default (props)=>{
                   label: '상품명',
                 })}
               />
-              {renderImageField('thumbnail')}
+              <NamedImageField name='thumbnail' />
               <FormTextField 
                 {...makeFieldProps({
                   name: 'address',
@@ -336,6 +338,7 @@ export default (props)=>{
                           },
                           extraFieldProps: {
                             select: true,
+                            error: errors.images?.[parentIndex]?.image_type&&true,
                           }
                         })}
                       >
@@ -349,7 +352,7 @@ export default (props)=>{
                     gridProps:{
                       xs: true,
                     },
-                    render:({parentIndex})=>renderImageField(`images[${parentIndex}].image`)
+                    render: ({parentIndex})=> <NamedImageField name={`images[${parentIndex}].image`} error={errors.images?.[parentIndex]?.image&&true} />
                   },
                 ]}
               />
@@ -373,6 +376,9 @@ export default (props)=>{
                           extraControllerProps: {
                             defaultValue: row.volumn,
                           },
+                          extraFieldProps: {
+                            error: errors.options?.[parentIndex]?.volumn&&true,
+                          }
                         })}
                       />
                     )
@@ -392,7 +398,8 @@ export default (props)=>{
                           extraFieldProps: {
                             InputProps:{
                               endAdornment:<InputAdornment position="end">원</InputAdornment>
-                            }
+                            },
+                            error: errors.options?.[parentIndex]?.price&&true,
                           }
                         })}
                       />
