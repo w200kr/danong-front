@@ -8,12 +8,22 @@ import {Fetch} from 'utils/Fetch.js'
 const AuthProvider = ({ children, history }) => {
   const prevAuth = window.localStorage.getItem('isAuthenticated') || false;
   const prevAuthUser = JSON.parse( window.localStorage.getItem('user') ) || null;
+  // if(prevAuthUser){
+  //   console.log(prevAuthUser.token)
+  // }
 
   const homeRedirect = ()=>history.push('/')
   const saveUserInfo = res=>{
-    window.localStorage.clear()
     const newAuthUser = {...value.authUser, ...res}
+    // console.log('=================')
+    // console.log(res.token)
+    // console.log(value.authUser.token)
+    // console.log(prevAuthUser.token)
+    // console.log(newAuthUser.token)
+    // console.log('=================')
+    
     setValue({...value, authUser: newAuthUser, isAuthenticated: true})
+    window.localStorage.clear()
     window.localStorage['isAuthenticated'] = true;
     window.localStorage.setItem('user', JSON.stringify(newAuthUser));
   }
@@ -57,9 +67,11 @@ const AuthProvider = ({ children, history }) => {
   //Hook을 통한 state, setState를 정의합니다.
   const [value, setValue] = React.useState(initialState);
 
-  // useEffect(() => {
-  //   alert('ksdjlk')
-  // }, [value.isAuthenticated]); // count가 바뀔 때만 effect를 재실행합니다.
+  // React.useEffect(() => {
+  //   console.log('=============')
+  //   console.log(value.authUser)
+  //   console.log('=============')
+  // }, [value.authUser]); // count가 바뀔 때만 effect를 재실행합니다.
 
 
   return (  
