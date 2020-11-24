@@ -167,9 +167,9 @@ export default (props)=>{
 
         // // Fetch.post('/api/products/', data).then(res=>{
         Fetch.post('/api/products/', formData).then(res=>{
-          console.log(res)
+          // console.log(res)
           alert('정상적으로 등록되었습니다.')
-          // history.push('/')
+          history.push('/')
         });
 
         console.log(data)
