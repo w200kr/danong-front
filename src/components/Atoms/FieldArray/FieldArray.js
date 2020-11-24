@@ -9,7 +9,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import NestedArray from "components/Atoms/NestedFieldArray/NestedFieldArray.js";
 
 export default (props) => {
-  const { parentName, parentFields, defaultParent, childName, childFields, childButtons, control, handleReset, appendButton=true, clearButton=true, ...rest } = props;
+  const { parentName, parentFields, defaultParent={}, childName, childFields, childButtons, control, handleReset, appendButton=true, clearButton=true, ...rest } = props;
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: parentName, // unique name for your Field Array
@@ -18,7 +18,7 @@ export default (props) => {
 
   const handleParent = {
     appendParent: ()=>{
-      append(defaultParent || {})
+      append(defaultParent)
     },
     removeParent: index => ()=>{
       remove(index)
@@ -44,11 +44,12 @@ export default (props) => {
                 );
               })}
 
+              {parentIndex>0?
               <Grid item key={parentIndex}>
                 <IconButton color="secondary" onClick={handleParent.removeParent(parentIndex)} aria-label="delete">
                   <DeleteIcon />
                 </IconButton>
-              </Grid>
+              </Grid>:''}
             </Grid>
 
             {(childName)?(
