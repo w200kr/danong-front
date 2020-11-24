@@ -17,6 +17,7 @@ import PageDetail from "domains/product/Detail"
 import PageLogin from 'domains/account/Login'
 import PageSignUp from 'domains/account/SignUp'
 import PageProfile from 'domains/account/Profile'
+import PageCheckout from 'domains/purchase/Checkout'
 import "utils/date.js";
 
 import "slick-carousel/slick/slick.css"; 
@@ -32,6 +33,7 @@ ReactDOM.render(
           <Route path="/login" component={PageLogin} />
           <Route path="/signup" component={PageSignUp} />
           <Route path="/profile" component={PageProfile} />
+          <Route path="/checkout" component={PageCheckout} />
 
           <Route path="/wishlist" component={PageWishList} />
           <Route path="/add" component={PageAdd} />
