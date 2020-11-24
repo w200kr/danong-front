@@ -36,7 +36,7 @@ export default (props)=>{
   const [aptitudeTable, setAptitudeTable] = React.useState('')
 
   React.useEffect(() => {
-    console.log(authUser)
+    // console.log(authUser)
     if(isAuthenticated && authUser['category']==='S'){
       Fetch.get('/api/categories/depth').then(res=>{
         setCategories(res)
@@ -46,14 +46,14 @@ export default (props)=>{
       history.push('/profile')
     }else{
       alert('판매자 회원만이 상품을 등록할 수 있습니다.')
-      history.push('/signup')
+      history.push('/login')
     }
   }, []);
 
   const defaultImage = {image_type:'', image:''}
-  const defaultImages = [{image_type:'top', image:''},{image_type:'content', image:''}]
+  const defaultImages = [defaultImage,]
   const defaultOption = {volumn:'', price:''}
-  const defaultOptions = [defaultOption, defaultOption]
+  const defaultOptions = [defaultOption,]
 
   const defaultValues = {
     images: defaultImages,
@@ -65,30 +65,13 @@ export default (props)=>{
     defaultValues,
   });
 
-  const baseControllerProps = {
-    control: control,
-    defaultValue: '',
-    rules: {
-      // required: true,
-    },
-  }
-
-  const baseFieldProps = ({keyword, label, ...rest}) => ({
-    className: classes.field,
-    label: label,
-    variant: 'outlined',
-    // helperText: (errors?.[keyword]&&true)?"올바른 이메일 주소가 아닙니다.":'',
-    error: errors?.[keyword]&&true,
-    ...rest,
-  })
-
   const makeFieldProps = ({name, label, helperText='', errorText='', extraControllerProps, extraFieldProps})=>({
     name: name,
     controllerProps: {
       control: control,
       defaultValue: '',
       rules: {
-        // required: true,
+        required: true,
       },
       ...extraControllerProps,
     },
@@ -131,8 +114,8 @@ export default (props)=>{
     });
   }
 
-  const handleResetImages = ()=>reset({ ...watchAll, 'images': defaultImages})
-  const handleResetOptions = ()=>reset({ ...watchAll, 'options': defaultOptions})
+  const handleResetImages = ()=>reset({images:[defaultImage]})
+  const handleResetOptions = ()=>reset({images:[defaultOption]})
 
 
   const renderImageField = (name)=>(
@@ -157,29 +140,40 @@ export default (props)=>{
         }
       />
       <form onSubmit={handleSubmit(data=>{
-        console.log(data)
-
         const formData = new FormData()
 
         Object.keys(data).map(key=>{
+          if (key==='thumbnail'||key==='images'||key==='options')
+            return;
           formData.append(key, data[key])
         })
         formData.set("thumbnail", data.thumbnail[0])
-        formData.delete('images')
-        formData.delete('options')
 
-        data['images'].map(obj=>{
-          formData.append('images[]', obj.image[0])
+        const images = data.images.filter(image=>(
+          image.image_type==='top'||image.image_type==='content') && image.image.length>0
+        )
+        const options = data.options.filter(option=>(
+          option.volumn!==''&&option.price!==''
+        ))
+
+        images.map(image=>{
+          formData.append('images[]', image.image[0])
         })
-        data['options'].map(option=>{
-          formData.append('options[]', JSON.stringify(option))
-        })
+        formData.set("images_rest", JSON.stringify(images.map(image=>{
+          delete image.image
+          return image
+        })))
+        formData.set("options", JSON.stringify(options))
 
         // // Fetch.post('/api/products/', data).then(res=>{
         Fetch.post('/api/products/', formData).then(res=>{
+          console.log(res)
           alert('정상적으로 등록되었습니다.')
-          history.push('/')
+          // history.push('/')
         });
+
+        console.log(data)
+
       })}>
         <Container 
           className={classes.container} 
@@ -205,9 +199,12 @@ export default (props)=>{
                   {...makeFieldProps({
                     name: 'large_category',
                     label: '상품 대분류',
+                    extraControllerProps:{
+                      defaultValue:'',
+                    },
                     extraFieldProps: {
                       select: true,
-                    }
+                    },
                   })}
                 >
                   {categories.map(category=>
@@ -227,9 +224,13 @@ export default (props)=>{
                   })}
                 >
                   <MenuItem value=''>-</MenuItem>
-                  {categories.find(large_category=>large_category.value===watchLargeCategory)?.sub_categories.map(sub_category=>
-                    <MenuItem key={sub_category.id} value={sub_category.id}>{sub_category.name}</MenuItem>
-                  )}
+                  {
+                    categories.reduce((acc, cur) => (
+                      [...acc, ...cur.sub_categories]
+                    ), []).map(sub_category=>(
+                      <MenuItem key={sub_category.id} value={sub_category.id} style={{display:watchLargeCategory===sub_category.large_category?'default':'none'}}>{sub_category.name}</MenuItem>
+                    ))
+                  }
                 </FormTextField>
               </Grid>
 
@@ -298,6 +299,7 @@ export default (props)=>{
                   name: 'price',
                   label: '대표 가격',
                   extraFieldProps: {
+                    type:'number',
                     InputProps:{
                       endAdornment:<InputAdornment position="end">원</InputAdornment>
                     }
@@ -308,6 +310,11 @@ export default (props)=>{
                 {...makeFieldProps({
                   name: 'description',
                   label: '상품 설명',
+                  extraFieldProps: {
+                    multiline: true,
+                    rows:3,
+                    rowsMax:5,
+                  },
                 })}
               />
             </Grid>
@@ -316,8 +323,25 @@ export default (props)=>{
                 {...{
                   parentName: 'images', 
                   handleReset: handleResetImages,
+                  defaultParent: defaultImage,
                   control}}
                 parentFields={[
+                  // {
+                  //   gridProps:{
+                  //     style:{display:'none'},
+                  //   },
+                  //   render:({parentIndex, row})=>(
+                  //     <FormTextField 
+                  //       {...makeFieldProps({
+                  //         name: `images[${parentIndex}].order`,
+                  //         label: '순서',
+                  //         extraControllerProps: {
+                  //           defaultValue: row.order || parentIndex,
+                  //         },
+                  //       })}
+                  //     />
+                  //   )
+                  // },
                   {
                     gridProps:{
                       xs: 4,
@@ -328,13 +352,14 @@ export default (props)=>{
                           name: `images[${parentIndex}].image_type`,
                           label: '이미지 용도',
                           extraControllerProps: {
-                            defaultValue: row.image_type || 'content',
+                            defaultValue: row.image_type || '',
                           },
                           extraFieldProps: {
                             select: true,
                           }
                         })}
                       >
+                        <MenuItem value=''>-</MenuItem>
                         <MenuItem value='top'>대표이미지</MenuItem>
                         <MenuItem value='content'>상품상세</MenuItem>
                       </FormTextField>
@@ -349,33 +374,29 @@ export default (props)=>{
                 ]}
               />
 
-                      {/*
-                      <input ref={register} type="file" name={`images[${parentIndex}].image`} accept='image/jpg,impge/png,image/jpeg' />
-
-                        // <FormTextField 
-                        //   {...makeFieldProps({
-                        //     name: `images[${parentIndex}].image`,
-                        //     // label: '이미지 용도',
-                        //     extraControllerProps: {
-                        //       defaultValue: row.image,
-                        //     },
-                        //     extraFieldProps: {
-                        //       type: 'file',
-                        //       inputProps: {
-                        //         accept: 'image/jpg,impge/png,image/jpeg',
-                        //         onChange: onFileUpload,
-                        //       },
-                        //     }
-                        //   })}
-                        // />
-                      */}
-
               <FieldArray 
                 {...{
                   parentName: 'options', 
                   handleReset: handleResetOptions,
+                  defaultParent: defaultOption,
                   control}}
                 parentFields={[
+                  // {
+                  //   gridProps:{
+                  //     style:{display:'none'},
+                  //   },
+                  //   render:({parentIndex, row})=>(
+                  //     <FormTextField 
+                  //       {...makeFieldProps({
+                  //         name: `options[${parentIndex}].order`,
+                  //         label: '순서',
+                  //         extraControllerProps: {
+                  //           defaultValue: row.order || parentIndex,
+                  //         },
+                  //       })}
+                  //     />
+                  //   )
+                  // },
                   {
                     gridProps:{
                       xs: 5,
