@@ -32,6 +32,10 @@ const searchStyle = theme => {
       width: '100%',
       maxWidth: 400,
       margin: 'auto',
+
+      [theme.breakpoints.down('sm')]: {
+        maxWidth: '100%',
+      },
     },
     slider: {
       height: 410,
@@ -46,6 +50,13 @@ const searchStyle = theme => {
       '& .slick-dots li': {
         width: 'auto',
         margin: 0,
+      },
+
+      [theme.breakpoints.down('sm')]: {
+
+        width: '70vw',
+        height: 'auto',
+        marginBottom: 30,
       },
     },
     productInfo: {
@@ -101,6 +112,13 @@ const searchStyle = theme => {
     soilInfo: {
 
     },
+    productDetail:{
+      // marginLeft: '-12px',
+      // marginRight: '-12px',
+    },
+    contentImage:{
+      width: '100%',
+    },
     reviews: {
       paddingTop: 50,
       paddingBottom: 50,
@@ -114,6 +132,30 @@ const searchStyle = theme => {
     },
     reviewText:{
       paddingTop: 6,
+    },
+
+
+    aptitudeTableDiv: {
+      marginBottom: 20,
+      width: '100%',
+      textAlign: 'center',
+
+      '& table': {
+        width: '100%',
+        color: "#444444",
+        border: '1px solid #444444',
+        borderCollapse: 'collapse',
+
+        '& th': {
+          backgroundColor: '#f1f1f1',
+        },
+        '& th.s_head': {
+          backgroundColor: '#f7f3f3',
+        },
+        '& th, td': {
+          border: '1px solid #444444',
+        },
+      },
     },
   })
 }

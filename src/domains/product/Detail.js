@@ -125,7 +125,7 @@ const Detail = (props)=> {
       >
         <Grid className={classes.summary} item xs={12} container>
           <Grid item xs={12} sm={7}>
-            <Box className={classes.mainImageBox} display='flex' flexDirection='column' justifyContent='center'>
+            <Box className={classes.mainImageBox} display='flex' flexDirection='column' justifyContent='center' alignItems="center">
               <Slider
                 {...settings}
               >
@@ -171,7 +171,7 @@ const Detail = (props)=> {
             </Typography>
 
 
-            {product.options&&product.options.length>0?(
+            {(product.options&&product.options.length>0)?(
               <React.Fragment>
                 <Divider className={classes.horizontalDivider} />
                 <List component="nav" aria-label="product options">
@@ -203,11 +203,11 @@ const Detail = (props)=> {
 
 
                   {product.options?product.options.map((option, index) => (
-                    <ClickAwayListener 
-                      key={index}
-                      onClickAway={handleClose}
-                    >
-                      <Paper>
+                    // <ClickAwayListener 
+                    //   key={index}
+                    //   onClickAway={handleClose}
+                    // >
+                      <Paper key={index}>
                         <MenuItem
                           key={option.id}
                           // disabled={index === 0}
@@ -217,7 +217,8 @@ const Detail = (props)=> {
                           <ListItemText primary={option.volumn} secondary={Number(option.price).toLocaleString()+'원'} />
                         </MenuItem>
                       </Paper>
-                    </ClickAwayListener>)):''
+                    // </ClickAwayListener>
+                    )):''
                   }
                 </Popper>
               </React.Fragment>
@@ -349,14 +350,10 @@ const Detail = (props)=> {
             </Box>
           </Grid>
           <Grid id='productDetail' className={classes.productDetail} item container direction='column' justify="center" alignItems="center">
+            <div className={classes.aptitudeTableDiv} dangerouslySetInnerHTML={ {__html: product.aptitude_table} }></div>
             {product.images?.filter(image=>image.image_type==='content').map((image,index)=>(
               <img key={index} className={classes.contentImage} src={image.image_url} alt={`content ${index}`} />
             ))}
-
-            <Grid className={classes.soilInfo} item xs={12}>
-              <div dangerouslySetInnerHTML={{__html: ``.replace(/(<? *script)/gi, 'illegalscript')}} >
-              </div>
-            </Grid>
           </Grid>
         </Grid>
         <Grid id="reviews" className={classes.reviews} item xs={12}>
