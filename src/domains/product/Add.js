@@ -147,6 +147,7 @@ export default (props)=>{
             return;
           formData.append(key, data[key])
         })
+        formData.set("aptitude_table", aptitudeTable)
         formData.set("thumbnail", data.thumbnail[0])
 
         const images = data.images.filter(image=>(
@@ -165,15 +166,11 @@ export default (props)=>{
         })))
         formData.set("options", JSON.stringify(options))
 
-        // // Fetch.post('/api/products/', data).then(res=>{
         Fetch.post('/api/products/', formData).then(res=>{
           // console.log(res)
           alert('정상적으로 등록되었습니다.')
           history.push('/')
         });
-
-        console.log(data)
-
       })}>
         <Container 
           className={classes.container} 
@@ -326,22 +323,6 @@ export default (props)=>{
                   defaultParent: defaultImage,
                   control}}
                 parentFields={[
-                  // {
-                  //   gridProps:{
-                  //     style:{display:'none'},
-                  //   },
-                  //   render:({parentIndex, row})=>(
-                  //     <FormTextField 
-                  //       {...makeFieldProps({
-                  //         name: `images[${parentIndex}].order`,
-                  //         label: '순서',
-                  //         extraControllerProps: {
-                  //           defaultValue: row.order || parentIndex,
-                  //         },
-                  //       })}
-                  //     />
-                  //   )
-                  // },
                   {
                     gridProps:{
                       xs: 4,
@@ -381,22 +362,6 @@ export default (props)=>{
                   defaultParent: defaultOption,
                   control}}
                 parentFields={[
-                  // {
-                  //   gridProps:{
-                  //     style:{display:'none'},
-                  //   },
-                  //   render:({parentIndex, row})=>(
-                  //     <FormTextField 
-                  //       {...makeFieldProps({
-                  //         name: `options[${parentIndex}].order`,
-                  //         label: '순서',
-                  //         extraControllerProps: {
-                  //           defaultValue: row.order || parentIndex,
-                  //         },
-                  //       })}
-                  //     />
-                  //   )
-                  // },
                   {
                     gridProps:{
                       xs: 5,
