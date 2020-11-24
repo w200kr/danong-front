@@ -31,6 +31,12 @@ const searchStyle = theme => {
       // flex: '0 0 auto',
       overflow: 'scroll', 
 
+      '-ms-overflow-style': 'none', // IE에서 스크롤바 감춤
+      '&::-webkit-scrollbar': { 
+        display: 'none !important', // 윈도우 크롬 등
+      },
+
+
       padding: 4, 
     },
     mapSection: {
