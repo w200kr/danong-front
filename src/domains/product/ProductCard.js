@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProductCard(props) {
-  const {product, history} = props;
+  const {product, history, isAuthenticated} = props;
   const classes = useStyles();
 
   const [dib, setDib] = React.useState(product.is_dibbed);
@@ -81,23 +81,24 @@ export default function ProductCard(props) {
           image={product.thumbnail}
           title={product.name}
         />
-
-        <IconButton
-          aria-label="search"
-          onClick={handleToggleDib}
-          edge="end"
-          size='small'
-          fontSize="default"
-          style={{
-            position: 'absolute',
-            top: '0px',
-            right: '12px',
-            zIndex: 200,
-            color: 'white',
-          }}
-        >
-          {(dib)?<FavoriteIcon color="secondary" />:<FavoriteBorderIcon />}
-        </IconButton>
+        {isAuthenticated?(
+          <IconButton
+            aria-label="search"
+            onClick={handleToggleDib}
+            edge="end"
+            size='small'
+            fontSize="default"
+            style={{
+              position: 'absolute',
+              top: '0px',
+              right: '12px',
+              zIndex: 200,
+              color: 'white',
+            }}
+          >
+            {(dib)?<FavoriteIcon color="secondary" />:<FavoriteBorderIcon />}
+          </IconButton>
+        ):''}
         <CardHeader
           title={
             <Box

@@ -24,9 +24,9 @@ import Footer from "components/Footer/Footer.js";
 import SearchBar from "./SearchBar.js";
 import ProductCard from "./ProductCard.js";
 
+import AuthContext from 'contexts/Auth/AuthContext.js';
 import {Fetch} from 'utils/Fetch.js'
 import customCluster from 'utils/MarkerClustering.js'
-import sampleData from 'sample.js'
 
 import styles from "./Search.style.js";
 
@@ -117,6 +117,7 @@ const Search = (props)=> {
   const {history, isWishlist, ...rest } = props;
   const searchUrl = '/api/products/'
   const defaultQuery = '?lat__lte=40.9511095&lng__lte=130.1039986&lat__gte=34.0210658&lng__gte=&$123.8527778'
+  const {isAuthenticated} = React.useContext(AuthContext) 
 
   const naverMapRef = React.useRef(null);
   const isFirstRun = React.useRef(true);
@@ -234,7 +235,7 @@ const Search = (props)=> {
           {
             products.map((product, index)=>(
               <Grid item xs={12} sm={6} md={6} lg={4} xl={3} key={index}>
-                <ProductCard {...{product, history}} />
+                <ProductCard {...{product, history, isAuthenticated}} />
               </Grid>
             ))
           }
