@@ -137,6 +137,22 @@ export default function Checkout(props) {
     });
   }
 
+  const onPurchase = res=>{
+    Fetch.post('/api/purchases/', {
+      ...res,
+      qty: bills[0].qty,
+      amount: totalAmount,
+      payment_type: 'card',
+      status: 20,
+      buyer: authUser.id,
+      product_option: bills[0].product_option.id
+    }).then(res=>{
+      alert('주문이 완료되었습니다.')
+      handleNext()
+      history.push('/')
+    })
+  }
+
   const defaultProps = {
     isAuthenticated, authUser, control, watch, watchAll, setValue, errors, register, bills, totalAmount,
   }
@@ -164,11 +180,10 @@ export default function Checkout(props) {
             {activeStep === steps.length ? (
               <React.Fragment>
                 <Typography variant="h5" gutterBottom>
-                  Thank you for your order.
+                  이용해주셔서 감사합니다.
                 </Typography>
                 <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order confirmation, and will
-                  send you an update when your order has shipped.
+                  주문번호 #2001539 결제가 완료되었습니다.
                 </Typography>
               </React.Fragment>
             ) : (
@@ -178,22 +193,10 @@ export default function Checkout(props) {
                   handleNext()
                 }
                 else if (activeStep === 1){
-                  purchase(res=>{
-                    Fetch.post('/api/purchases/', {
-                      ...res,
-                      qty: bills[0].qty,
-                      amount: totalAmount,
-                      payment_type: 'card',
-                      status: 20,
-                      buyer: authUser.id,
-                      product_option: bills[0].product_option
-                    }).then(res=>{
-                      console.log(res)
-                      handleNext()
-                    })
-                  })
+                  purchase(onPurchase)
                 }
-              })}>
+              })}
+               >
                 {getStepContent(activeStep, defaultProps)}
                   
                 <div className={classes.buttons}>
@@ -206,7 +209,12 @@ export default function Checkout(props) {
                     type='submit'
                     variant="contained"
                     color="primary"
-                    // onClick={handleNext}
+                    // onClick={()=>{
+                    //   const res = JSON.parse(`{"success":true,"imp_uid":"imp_040396439428","pay_method":"card","merchant_uid":"nobody_1606205396320","name":"주문명:신석은 20000","paid_amount":100,"currency":"KRW","pg_provider":"danal_tpay","pg_type":"payment","pg_tid":"202011241709565143483400","apply_num":"53872661","buyer_name":"신석은","buyer_email":"w200kr@gmail.com","buyer_tel":"01092874497","buyer_addr":"서울특별시 동대문구 망우로12길 49-1 지하 B102호","buyer_postcode":"","custom_data":null,"status":"paid","paid_at":1606205435,"receipt_url":"https://www.danalpay.com/receipt/creditcard/view.aspx?dataType=receipt&cpid=6010034465&data=djgEU4F03PoPLB%2FWjtlNOqy8EpzlXrtyeU1BKB8SnkzlsSu9zpPAS3XoNVR02Yb%2B","card_name":"BC카드","bank_name":null,"card_quota":0,"card_number":"91002000****4543"}`)
+                    //   console.log(res)
+                    //   // purchase(onPurchase)
+                    //   onPurchase(res)
+                    // }}
                     className={classes.button}
                   >
                     {activeStep === steps.length - 1 ? '결제하기' : '다음'}
