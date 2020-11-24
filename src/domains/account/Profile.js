@@ -123,8 +123,6 @@ export default (props)=>{
   // job_position
   // main_crops
 
-  console.log(categories)
-
   return (
     <Box className={classes.root} component="div" display='flex' flexDirection="column" alignItems='stretch'>
       <Header 
@@ -141,7 +139,6 @@ export default (props)=>{
           formData.append(key, data[key])
         })
         formData.set("thumbnail", data?.thumbnail[0] || '')
-        formData.append('user', authUser.user)
 
         Fetch.put(profileUrl, formData).then(afterResponse).then(()=>{
           alert('저장되었습니다.')
