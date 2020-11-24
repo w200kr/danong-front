@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
@@ -14,6 +14,8 @@ import Popover from '@material-ui/core/Popover';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import ToggleButton from '@material-ui/lab/ToggleButton';
 
@@ -30,31 +32,10 @@ import styles from "./SearchBar.style.js";
 
 const useStyles = makeStyles(styles);
 
-export default function SearchBar({handleClick}) {
+export default function SearchBar(props) {
+  const {handleSearch, categories, fetchProducts, parameter, setParameter, handleChangeParemeter} = props
+  const {handleSubmit, errors, control, register, getValues, watch} = useFormContext()
   const classes = useStyles();
-
-  const [openPanels, setOpenPanels] = React.useState({
-    item: false,
-    envFit: false,
-    delivery: false,
-    detail: false,
-  });
-
-  const [categories, setCategories] = React.useState([
-    {"value":"garden","label":"야채류","sub_categories":[{"id":1,"large_category":"garden","name":"가지"},{"id":2,"large_category":"garden","name":"깻잎"},{"id":3,"large_category":"garden","name":"배추"},{"id":4,"large_category":"garden","name":"상추"}]},
-    {"value":"green","label":"청과류","sub_categories":[{"id":6,"large_category":"green","name":"사과"},{"id":7,"large_category":"green","name":"배"}]},
-    {"value":"grain","label":"곡류","sub_categories":[{"id":8,"large_category":"grain","name":"쌀"}]},
-    {"value":"nuts","label":"견과류","sub_categories":[{"id":9,"large_category":"nuts","name":"땅콩"}]},
-    {"value":"mushrooms","label":"버섯류","sub_categories":[{"id":10,"large_category":"mushrooms","name":"송이버섯"}]},
-    {"value":"etc","label":"기타/가공품","sub_categories":[{"id":11,"large_category":"etc","name":"홍삼"}]}
-  ])
-
-
-  React.useEffect(() => {
-    // Fetch.get('/api/categories/depth').then(res=>{
-    //   setCategories(res)
-    // })
-  }, []);
 
   const tabsActions = React.useRef()
   const anchorRefs = {
@@ -64,8 +45,11 @@ export default function SearchBar({handleClick}) {
     detail: React.useRef(null),
   };
 
-  const { handleSubmit, errors, control, register, getValues, watch } = useForm({
-    reValidateMode: 'onBlur'
+  const [openPanels, setOpenPanels] = React.useState({
+    item: false,
+    envFit: false,
+    delivery: false,
+    detail: false,
   });
 
   const baseControllerProps = {
@@ -76,7 +60,6 @@ export default function SearchBar({handleClick}) {
   // const preventDefault = (event) => event.preventDefault();
   const handlePanelClose = (key) => (event) => {
     // console.log(anchorRefs.item.current)
-    // console.log(anchorRefs.item.current)
     // console.log(event.target)
     if (anchorRefs.item.current && anchorRefs.item.current.contains(event.target)) {
       return;
@@ -86,8 +69,6 @@ export default function SearchBar({handleClick}) {
       ...openPanels,
       [key]:!openPanels[key],
     })
-
-    console.log(openPanels)
   };
 
   const makePopoverProps = (key) => ({
@@ -130,24 +111,73 @@ export default function SearchBar({handleClick}) {
     </span>
   );
 
-  const options = categories.map((category)=>({
-    label: category.label,
-    content: (
-      <FormCheckbox
-        name={category.value}
-        controllerProps={{...baseControllerProps}}
-        // labelText='소속 팀 선택'
-        // helperText='현재는 시립대 소속만 가입 가능합니다.'
-        error= {errors?.itemType&&true}
-        options={
-          category.sub_categories.map(sub_category=>({
-            label: sub_category.name,
-            value: sub_category.id,
-          }))
-        }
-      />
-    ),
-  }))
+  const options = categories.map((category)=>{
+    return ({
+      label: category.label,
+      content: 
+        category.sub_categories.map((subCategory, index)=>
+          <FormControlLabel 
+            key={index} 
+            control={<Checkbox />}
+            label={subCategory.name}
+            checked={parameter.categories[subCategory.id] || false}
+            onClick={()=>{
+
+              // console.log(parameter['categories'])
+              // console.log(subCategory.id)
+              // console.log(!parameter['categories'][subCategory.id])
+
+              console.log(parameter)
+
+
+
+
+              handleChangeParemeter('categories', subCategory.id, !parameter.categories[subCategory.id])
+
+              // console.log(!parameter.categories[subCategory.id])
+              // setParameter({
+              //   ...parameter,
+              //   'categories': {
+              //     ...parameter.categories,
+              //     [subCategory.id]: !parameter.categories[subCategory.id]
+              //   }
+              // })
+            }}
+          />
+        
+
+
+        // <FormCheckbox
+        //   name='category'
+        //   controllerProps={{
+        //     register: register,
+        //     control: control,
+        //     // defaultChecked: true,
+        //   }}
+        //   // labelText='소속 팀 선택'
+        //   // helperText='현재는 시립대 소속만 가입 가능합니다.'
+        //   error= {errors?.itemType&&true}
+        //   options={
+        //     category.sub_categories.map(subCategory=>({
+        //       label: subCategory.name,
+        //       // value: false,
+        //       onClick: function (){
+        //         alert(parameter)
+        //         setParameter({
+        //           ...parameter,
+        //           'categories': {
+        //             ...parameter.categories,
+        //             [subCategory.id]: !parameter.categories[subCategory.id]
+        //           }
+        //         })
+        //       },
+        //       checked: parameter.categories[subCategory.id],
+        //     }))
+        //   }
+        // />
+      ),
+    })
+  })
 
   const watchAddress = watch('address')
 
@@ -165,7 +195,7 @@ export default function SearchBar({handleClick}) {
               placeholder="주소 검색"
               // inputProps={{ 'aria-label': 'search google maps' }}
             />
-            <IconButton type="submit" className={classes.iconButton} aria-label="search" onClick={handleClick(watchAddress)}>
+            <IconButton type="submit" className={classes.iconButton} aria-label="search" onClick={handleSearch(watchAddress)}>
               <SearchIcon />
             </IconButton>
             <Divider className={classes.divider} orientation="vertical" />

@@ -1,7 +1,7 @@
 import React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm, useFormContext, useFieldArray } from "react-hook-form";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import {Box, Container, Grid, InputAdornment, IconButton, List, ListItem, ListItemText, Link, Paper} from '@material-ui/core';
@@ -33,20 +33,37 @@ import styles from "./Search.style.js";
 const useStyles = makeStyles(styles);
 
 
-function NaverMapAPI(props){
+function NaverMapAPI(props, ref){
+  const {products, handleIdle} = props;
   const navermaps = window.naver.maps;
   const N = window.N;
-
-  const {center, handleCenter, zoom, products} = props;
-
   const MarkerClustering = customCluster(navermaps)
 
-  const naverMapRef = React.useRef(null);
+  const naverMapRef = React.useRef();
+
+  const [center, setCenter] = React.useState({ lat: 36.2253017, lng: 127.6460516 });
+  const [zoom, setZoom] = React.useState(7);
+  const [markerClustering, setMarkerClustering] = React.useState(null);
+
+  React.useImperativeHandle(ref, () => naverMapRef.current );
+  React.useEffect(()=>{
+    setMarkerClustering(new MarkerClustering({
+      minClusterSize: 1,
+      maxZoom: 13,
+      map: naverMapRef.current.map,
+      markers: [],
+      disableClickZoom: false,
+      gridSize: 80,
+      icons: makeMarkers(N),
+      indexGenerator: [10, 20, 30, 50, 100],
+      stylingFunction: function(clusterMarker, count) {
+        clusterMarker.getElement().firstElementChild.textContent=count
+      }
+    }))
+  },[])
+
 
   React.useEffect(()=>{
-    // console.log('useEffect')
-    // console.log(naverMapRef.current)
-    // console.log(window.naver)
 
     let markers = [];
 
@@ -60,84 +77,145 @@ function NaverMapAPI(props){
       markers.push(marker);
     })
 
-    console.log(markers)
-
-    var markerClustering = new MarkerClustering({
-      minClusterSize: 1,
-      maxZoom: 13,
-      map: naverMapRef.current.map,
-      markers: markers,
-      disableClickZoom: false,
-      gridSize: 80,
-      icons: makeMarkers(N),
-      indexGenerator: [10, 20, 30, 50, 100],
-      stylingFunction: function(clusterMarker, count) {
-        clusterMarker.getElement().firstElementChild.textContent=count
-      }
-    });
+    if (markerClustering){
+      markerClustering.markers = markers;
+      markerClustering._redraw()
+    }
   },[products])
-
-  console.log(center)
+  React.useEffect(()=>{
+    // if(markerClustering){
+    //   console.log(markerClustering)
+    //   console.log(handleIdle)
+    // }
+  },[markerClustering])
 
   return (
     <NaverMap
-      // mapDivId={'maps-getting-started-uncontrolled'} // default: react-naver-map
       style={{
         width: '100%', // 네이버지도 가로 길이
         height: '100%' // 네이버지도 세로 길이
       }}
-      // defaultCenter={center} // 지도 초기 위치
-      // center={center}
-      onCenterChanged={props=>{
-        console.log('onCenterChanged')
-        console.log(props)
-      }}
-      onBoundsChanged={(props)=>{
-        console.log('onBoundsChanged')
-        console.log(props)
-      }}
+      onIdle={handleIdle}
       zoomControl={true}
       zoomControlOptions={{
         position: navermaps.Position.TOP_LEFT,
         style: navermaps.ZoomControlStyle.SMALL
       }}
-
       zoom={zoom} // 지도 초기 확대 배율
-
-      naverRef={ref=>{naverMapRef.current=ref}}
+      naverRef={ref=>{
+        naverMapRef.current=ref
+      }}
     >
     </NaverMap>
   )
 } 
 
+NaverMapAPI = React.forwardRef(NaverMapAPI);
+
 const Search = (props)=> {
   const classes = useStyles();
-  const {history, ...rest } = props;
+  const {history, isWishlist, ...rest } = props;
+  const searchUrl = '/api/products/'
+  const defaultQuery = '?lat__lte=40.9511095&lng__lte=130.1039986&lat__gte=34.0210658&lng__gte=&$123.8527778'
 
-  const [center, setCenter] = React.useState({ lat: 36.2253017, lng: 127.6460516 });
-  const [zoom, setZoom] = React.useState(7);
+  const naverMapRef = React.useRef(null);
+  const isFirstRun = React.useRef(true);
+
   const [products, setProducts] = React.useState([])
+  const [categories, setCategories] = React.useState([])
+  const [parameter, setParameter] = React.useState({
+    // key-value 
+    'categories': {},
+    'envFit': {},
+    'delivery': {},
+    'detail': {},
+  })
 
+  const methods = useForm({
+    // mode: 'onBlur',
+    // reValidateMode: 'onBlur',
+  });
 
-  React.useEffect(()=>{
-    Fetch.get('/api/products/').then(res=>{
-      setProducts(res);
-    })
+  React.useEffect( () => {
+    async function fetchCategory(){
+      const response = await Fetch.get('/api/categories/depth/')
+
+      setCategories(response);
+      setParameter({
+        ...parameter,
+        'categories' : response.reduce((acc, cur) => (
+          [...acc, ...cur.sub_categories]
+        ), []).reduce((acc,cur)=>(
+          {...acc, ...{[cur.id]:false}}
+        ), {}),
+      })
+    }
+
+    fetchCategory()
   },[])
 
-  const handleClick = (address) => async () => {
+  React.useEffect(() => {
+    // very first (parameter initalize) order1
+    if (Object.keys(parameter.categories).length===0){
+      return ;
+    }
+    fetchProducts() 
+  }, [parameter]);
+
+  const handleSearch = (address) => async () => {
     if (address===''){
       alert('주소를 입력해주세요.')
       return ;
     }
-    setZoom(9)
-    // let response = await Fetch.get('/api/navermap/geocode/'+address)
-    // if (response.status==='OK' && response.meta.totalCount > 0){
-    //   setCenter({lat: response.addresses[0].y, lng: response.addresses[0].x})
-    // }
+    naverMapRef.current.setZoom(12)
+    let response = await Fetch.get('/api/navermap/geocode/'+address)
+    if (response.status==='OK' && response.meta.totalCount > 0){
+      naverMapRef.current.setCenter({lat: response.addresses[0].y, lng: response.addresses[0].x})
+    }
   }
 
-  const handleCenter= center => setCenter(center) 
+  const makeQuery = (init=false)=>{
+    // after setting parameter order2
+    if (isFirstRun.current || !naverMapRef.current){
+      isFirstRun.current = false
+      return defaultQuery
+    }
+
+    const categoryIds = Object.keys(parameter.categories).filter(key => parameter.categories[key] === true).join(',')
+    const categoryQuery = categoryIds?`category__in=${categoryIds}&`:''
+
+    const {_ne, _sw} = naverMapRef.current.getBounds()
+    // const geoQuery = (naverMapRef.current===null)?`lat__lte=40.9511095&lng__lte=130.1039986&lat__gte=34.0210658&lng__gte=&$123.8527778`:`lat__lte=${_ne._lat}&lng__lte=${_ne._lng}&lat__gte=${_sw._lat}&lng__gte=&${_sw._lng}`
+    const geoQuery = `lat__lte=${_ne._lat}&lng__lte=${_ne._lng}&lat__gte=${_sw._lat}&lng__gte=&${_sw._lng}`
+
+    return `?${categoryQuery}${geoQuery}`
+  }
+
+  const fetchProducts = ()=>{
+    const query = makeQuery()
+    console.log(query)
+    Fetch.get(searchUrl+query).then(res=>{
+      if (isWishlist){
+        setProducts(res.filter(obj=>obj.is_dibbed===true));
+      }else{
+        setProducts(res)
+      }
+    })
+  }
+
+  const handleChangeParemeter = (group, key, value)=>{
+    setParameter({
+      ...parameter,
+      [group]: {
+        ...parameter[group],
+        [key]: value,
+      }
+    })
+  }
+
+  const handleIdle = ()=>{
+    fetchProducts()
+  }
 
   return (
     <Box className={classes.root} component="div" display='flex' flexDirection="column" overflow="hidden" height="100vh">
@@ -146,7 +224,11 @@ const Search = (props)=> {
           <Logo />
         }
       />
-      <SearchBar handleClick={handleClick} />
+
+      <FormProvider {...methods} >
+        <SearchBar handleSearch={handleSearch} categories={categories} fetchProducts={fetchProducts} {...{parameter, handleChangeParemeter}} />
+      </FormProvider>
+
       <Grid className={classes.container} container>
         <Grid className={classes.productSection} item xs={12} sm={12} md={12} lg={7} xl={7} container justify="space-evenly" alignItems="center" alignContent="flex-start">
           {
@@ -166,10 +248,9 @@ const Search = (props)=> {
             submodules={['geocoder']}
           >
             <NaverMapAPI 
-              center={center} 
-              handleCenter={handleCenter}
-              zoom={zoom}
               products={products}
+              handleIdle={handleIdle}
+              ref={naverMapRef}
             />
           </RenderAfterNavermapsLoaded>
         </Grid>
