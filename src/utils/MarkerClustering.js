@@ -412,7 +412,7 @@
          * 지도의 Idle 상태 이벤트 핸들러입니다.
          */
         _onIdle: function() {
-            this._redraw();
+            // this._redraw();
         },
 
         /**
