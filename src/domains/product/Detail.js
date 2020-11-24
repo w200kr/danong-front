@@ -86,14 +86,10 @@ const Detail = (props)=> {
   };
 
   React.useEffect(() => {
-    console.log('useEffect')
-
-    if(isAuthenticated){
-      Fetch.get('/api/products/'+props.match.params.productId).then(res=>{
-        // console.log(res)
-        setProduct(res)
-      })
-    }
+    Fetch.get('/api/products/'+props.match.params.productId).then(res=>{
+      // console.log(res)
+      setProduct(res)
+    })
   }, []);
 
   const getMainPrice = ()=>{
@@ -277,7 +273,12 @@ const Detail = (props)=> {
                     amount: getMainPrice() * qty
                   }
                   window.localStorage.setItem('checkout', JSON.stringify(obj));
-                  history.push('/checkout')
+                  if (isAuthenticated){
+                    history.push('/checkout')
+                  }else{
+                    alert('회원만 주문이 가능합니다.')
+                    history.push('/login')
+                  }
                 }}>
                   구매하기
                 </Button>

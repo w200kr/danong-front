@@ -38,7 +38,6 @@ export default (props)=>{
 
   const afterResponse = res=>{
     saveUserInfo(res)
-    // setProfile(res)
 
     return res
   }
@@ -137,8 +136,6 @@ export default (props)=>{
         }
       />
       <form className={classes.form} onSubmit={handleSubmit(data=>{
-        console.log(data)
-
         const formData = new FormData()
 
         Object.keys(data).map(key=>{

@@ -36,17 +36,16 @@ export default (props)=>{
   const [aptitudeTable, setAptitudeTable] = React.useState('')
 
   React.useEffect(() => {
-    // console.log(authUser)
-    if(isAuthenticated && authUser['category']==='S'){
-      Fetch.get('/api/categories/depth').then(res=>{
-        setCategories(res)
-      })
-    }else if(isAuthenticated && authUser['category']!=='S'){
+    if(!isAuthenticated){
+      alert('판매자 회원만이 상품을 등록할 수 있습니다.')
+      history.push('/login')
+    }else if(isAuthenticated && authUser['category']!=='S' ){
       alert('판매자 회원만이 상품을 등록할 수 있습니다.')
       history.push('/profile')
     }else{
-      alert('판매자 회원만이 상품을 등록할 수 있습니다.')
-      history.push('/login')
+      Fetch.get('/api/categories/depth').then(res=>{
+        setCategories(res)
+      })
     }
   }, []);
 
