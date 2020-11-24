@@ -23,6 +23,10 @@ const searchStyle = theme => {
     },
     mainImageBox: {
       padding: 30,
+
+      [theme.breakpoints.down('sm')]: {
+        padding: 0,
+      },
     },
     mainImage: {
       width: '100%',
@@ -53,6 +57,10 @@ const searchStyle = theme => {
       backgroundColor: '#707070',
       // marginTop: 30,
       // marginBottom: 30,
+
+      [theme.breakpoints.down('sm')]: {
+        display:'none',
+      },
     },
     links: {
       display: 'flex',

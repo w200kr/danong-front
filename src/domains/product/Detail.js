@@ -124,7 +124,7 @@ const Detail = (props)=> {
         alignItems="center"
       >
         <Grid className={classes.summary} item xs={12} container>
-          <Grid item xs={7}>
+          <Grid item xs={12} sm={7}>
             <Box className={classes.mainImageBox} display='flex' flexDirection='column' justifyContent='center'>
               <Slider
                 {...settings}
@@ -141,7 +141,7 @@ const Detail = (props)=> {
 
             </Box>
           </Grid>
-          <Grid className={classes.productInfo} item xs={5}>
+          <Grid className={classes.productInfo} item xs={12} sm={5}>
             <Box component='span' display='flex' justifyContent='space-between' alignItems="center">
               <Box>
                 <Typography variant='h6'>
