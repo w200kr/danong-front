@@ -43,7 +43,7 @@ const DefaultRightLinks = ()=>{
                 <ListItemText primary="관심목록" />
             </ListItemLink>
             <ListItemLink onClick={()=>history.push('/add')}>
-                <ListItemText primary="재료등록" />
+                <ListItemText primary="상품등록" />
             </ListItemLink>
             {(isAuthenticated)?
                 <React.Fragment>
