@@ -270,8 +270,9 @@ const Detail = (props)=> {
                   const obj = {
                     product_option: selectedOption,
                     qty: qty,
-                    amount: getMainPrice() * qty
+                    amount: getMainPrice()
                   }
+                  console.log(obj)
                   window.localStorage.setItem('checkout', JSON.stringify(obj));
                   if (isAuthenticated){
                     history.push('/checkout')
