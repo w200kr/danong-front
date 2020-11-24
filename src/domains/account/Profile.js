@@ -123,6 +123,8 @@ export default (props)=>{
   // job_position
   // main_crops
 
+  console.log(categories)
+
   return (
     <Box className={classes.root} component="div" display='flex' flexDirection="column" alignItems='stretch'>
       <Header 
@@ -205,6 +207,11 @@ export default (props)=>{
                     label: '주판매 작물 대분류',
                     extraFieldProps: {
                       select: true,
+
+                      onChange:e=>{
+                        setValue('large_category', e.target.value)
+                        setValue('main_crops', '')
+                      }
                     }
                   })}
                 >
@@ -224,9 +231,16 @@ export default (props)=>{
                   })}
                 >
                   <MenuItem value=''>-</MenuItem>
-                  {categories.find(large_category=>large_category.value===watchLargeCategory)?.sub_categories.map(sub_category=>
-                    <MenuItem key={sub_category.id} value={sub_category.id}>{sub_category.name}</MenuItem>
-                  )}
+                  {
+                    categories.reduce((acc, cur) => (
+                      [...acc, ...cur.sub_categories]
+                    ), []).map(sub_category=>{
+                      console.log(watchLargeCategory)
+                      return <MenuItem key={sub_category.id} value={sub_category.id} style={{display:watchLargeCategory===sub_category.large_category?'default':'none'}}>{sub_category.name}</MenuItem>
+                    })
+                  }
+
+
                 </FormTextField>
               </Grid>
               <FormTextField 
@@ -237,12 +251,29 @@ export default (props)=>{
               />
               <FormTextField 
                 {...makeFieldProps({
+                  name: 'job_position',
+                  label: '직위',
+                })}
+              />
+              <FormTextField 
+                {...makeFieldProps({
                   name: 'career',
                   label: '경력사항',
                   extraFieldProps: {
                     multiline: true,
-                    rows:8,
-                    rowsMax:12,
+                    rows:3,
+                    rowsMax:5,
+                  },
+                })}
+              />
+              <FormTextField 
+                {...makeFieldProps({
+                  name: 'comment',
+                  label: '사장님 알림',
+                  extraFieldProps: {
+                    multiline: true,
+                    rows:5,
+                    rowsMax:10,
                   },
                 })}
               />

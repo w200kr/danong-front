@@ -6,6 +6,9 @@ export default theme => {
     form: {
       flex: '1 1 auto',
     },
+    field: {
+      marginTop: 10,
+    },
     container:{
       paddingTop: 40,
       paddingBottom: 40,
