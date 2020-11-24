@@ -93,7 +93,7 @@ export default function ProductCard(props) {
               top: '0px',
               right: '12px',
               zIndex: 200,
-              color: 'white',
+              // color: 'white',
             }}
           >
             {(dib)?<FavoriteIcon color="secondary" />:<FavoriteBorderIcon />}
