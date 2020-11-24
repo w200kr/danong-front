@@ -5,6 +5,7 @@ import AuthContext from './AuthContext.js';
 import {Fetch} from 'utils/Fetch.js'
 
 
+const copyObject = obj=>({...obj, ...JSON.parse(JSON.stringify(obj))})
 const AuthProvider = ({ children, history }) => {
   const prevAuth = window.localStorage.getItem('isAuthenticated') || false;
   const prevAuthUser = JSON.parse( window.localStorage.getItem('user') ) || null;
@@ -14,15 +15,17 @@ const AuthProvider = ({ children, history }) => {
 
   const homeRedirect = ()=>history.push('/')
   const saveUserInfo = res=>{
-    const newAuthUser = {...value.authUser, ...res}
+    const newAuthUser = {...copyObject(value.authUser), ...copyObject(res)}
     // console.log('=================')
     // console.log(res.token)
     // console.log(value.authUser.token)
     // console.log(prevAuthUser.token)
     // console.log(newAuthUser.token)
     // console.log('=================')
-    
-    setValue({...value, authUser: newAuthUser, isAuthenticated: true})
+    // console.log(value)
+    // console.log(copyObject(value))
+    setValue({...copyObject(value), authUser:newAuthUser})
+    // setValue({...value, authUser: newAuthUser, isAuthenticated: true})
     window.localStorage.clear()
     window.localStorage['isAuthenticated'] = true;
     window.localStorage.setItem('user', JSON.stringify(newAuthUser));
@@ -66,6 +69,11 @@ const AuthProvider = ({ children, history }) => {
   };
   //Hook을 통한 state, setState를 정의합니다.
   const [value, setValue] = React.useState(initialState);
+  React.useEffect(() => {
+    // console.log('============STATE CHANGE========')
+    // console.log(value)
+    // console.log('================================')
+  }, [value]); // count가 바뀔 때만 effect를 재실행합니다.
 
   // React.useEffect(() => {
   //   console.log('=============')
