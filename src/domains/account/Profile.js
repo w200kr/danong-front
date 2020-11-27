@@ -33,11 +33,15 @@ export default (props)=>{
 
   const profileUrl = `/api/profiles/${authUser.profile_id}/`;
 
-  // const [profile, setProfile] = React.useState({})
+  const [profile, setProfile] = React.useState({})
   const [categories, setCategories] = React.useState([])
+  const [userCategory, setUserCategory] = React.useState()
 
   const afterResponse = res=>{
-    saveUserInfo(res)
+    setProfile(res)
+    saveUserInfo({
+      category: res.category,
+    })
 
     return res
   }
@@ -47,19 +51,23 @@ export default (props)=>{
       alert('먼저 로그인을 진행해주셔야 합니다.')
       history.push('/login')
     }else{
-      Fetch.get('/api/categories/depth').then(res=>{
-        setCategories(res)
-      })
-      // Fetch.get(profileUrl).then(afterResponse)//.then(saveUserInfo)
+      async function categoriesInit(){
+        const c = await Fetch.get('/api/categories/depth')
+        setCategories(c)
+      }
+
+      async function profileInit(){
+        const p = await Fetch.get(profileUrl)//.then(afterResponse)//.then(saveUserInfo)
+        afterResponse(p)
+      }
+      categoriesInit()
+      profileInit()
     }
   }, []);
-  React.useEffect(() => {
-    if(categories){
-      setValue('large_category', authUser.large_category)
-      setValue('main_crops', authUser.main_crops)
-    }
-  }, [categories]);
 
+  React.useEffect(() => {
+    reset(profile)
+  }, [profile]);
 
   const { register, handleSubmit, errors, control, watch, reset, setValue } = useForm({
     reValidateMode: 'onBlur',
@@ -89,7 +97,7 @@ export default (props)=>{
     name: name,
     controllerProps: {
       control: control,
-      defaultValue: authUser[name] || '',
+      defaultValue: '',
       rules: {
         required: true,
       },
@@ -120,13 +128,18 @@ export default (props)=>{
     />
   )
 
-  // name
-  // tel
-  // career
-  // thumbnail
-  // seller_name
-  // job_position
-  // main_crops
+  const saveProfile = data=>{
+    const formData = new FormData()
+
+    Object.keys(data).map(key=>{
+      formData.append(key, data[key])
+    })
+    formData.set("thumbnail", data?.thumbnail[0] || '')
+
+    Fetch.put(profileUrl, formData).then(afterResponse).then(()=>{
+      alert('저장되었습니다.')
+    })
+  }
 
   return (
     <Box className={classes.root} component="div" display='flex' flexDirection="column" alignItems='stretch'>
@@ -135,18 +148,7 @@ export default (props)=>{
           <Logo />
         }
       />
-      <form className={classes.form} onSubmit={handleSubmit(data=>{
-        const formData = new FormData()
-
-        Object.keys(data).map(key=>{
-          formData.append(key, data[key])
-        })
-        formData.set("thumbnail", data?.thumbnail[0] || '')
-
-        Fetch.put(profileUrl, formData).then(afterResponse).then(()=>{
-          alert('저장되었습니다.')
-        })
-      })}>
+      <form className={classes.form} onSubmit={handleSubmit(saveProfile)}>
         <Container
           className={classes.container} 
           maxWidth='xs' 
@@ -167,15 +169,12 @@ export default (props)=>{
             {/*<Avatar className={classes.pink}>
                           <AccountCircleIcon />
                         </Avatar>*/}
-            <Avatar className={classes.avatar} src={authUser.thumbnail_url} />
+            <Avatar className={classes.avatar} src={profile.thumbnail_url} />
             {renderImageField('thumbnail')}
             <FormTextField 
               {...makeFieldProps({
                 name: 'name',
                 label: '실명',
-                // extraControllerProps: {
-                //   defaultValue: profile["name"],
-                // }
               })}
             />
             <FormTextField 
@@ -188,7 +187,6 @@ export default (props)=>{
               name='category'
               controllerProps={{
                 ...baseControllerProps,
-                defaultValue: authUser.category,
               }}
               formControlProps={{className:classes.categoryRadio}}
               labelText='회원 분류'
@@ -244,8 +242,6 @@ export default (props)=>{
                       return <MenuItem key={sub_category.id} value={sub_category.id} style={{display:watchLargeCategory===sub_category.large_category?'default':'none'}}>{sub_category.name}</MenuItem>
                     })
                   }
-
-
                 </FormTextField>
               </Grid>
               <FormTextField 
@@ -283,10 +279,14 @@ export default (props)=>{
                 })}
               />
             </React.Fragment>:''}
-
-            <Button type='submit' color="primary" size="large" variant='contained' fullWidth>
-              저장
-            </Button>
+            <Box display='flex' width='100vh' mt='10'>
+              <Button type='reset' color="secondary" size="large" variant='contained' onClick={()=>reset(profile)} fullWidth>
+                초기화
+              </Button>
+              <Button type='submit' color="primary" size="large" variant='contained' fullWidth>
+                저장
+              </Button>
+            </Box>
           </Grid>
         </Container>
       </form>
