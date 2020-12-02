@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   tabs: {
+    minWidth: 160,
     borderRight: `1px solid ${theme.palette.divider}`,
   },
   tab: {
