@@ -56,14 +56,19 @@ export default (props)=>{
         setCategories(c)
       }
 
+      categoriesInit()
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (categories.length>0){
       async function profileInit(){
         const p = await Fetch.get(profileUrl)//.then(afterResponse)//.then(saveUserInfo)
         afterResponse(p)
       }
-      categoriesInit()
       profileInit()
     }
-  }, []);
+  }, [categories]);
 
   React.useEffect(() => {
     reset(profile)

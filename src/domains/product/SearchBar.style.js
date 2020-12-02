@@ -90,6 +90,15 @@ const searchBarStyle = theme => ({
     [theme.breakpoints.down('sm')]: {
       width: '100vw',
     }
+  },
+  smallPanel:{
+    width: '20vw',
+  },
+  helperText:{
+    color: 'rgba(0, 0, 0, 0.54)',
+    margin: 0,
+    fontSize: '0.75rem',
+    marginTop: 5,
   }
 });
 

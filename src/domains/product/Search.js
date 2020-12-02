@@ -124,13 +124,24 @@ const Search = (props)=> {
 
   const [products, setProducts] = React.useState([])
   const [categories, setCategories] = React.useState([])
-  const [parameter, setParameter] = React.useState({
+
+  const initalParams = {
     // key-value 
     'categories': {},
-    'envFit': {},
-    'delivery': {},
-    'detail': {},
-  })
+    'envFit': {
+      natural:false,
+      low_cabon:false,
+      organic:false,
+      low_pesticide:false,
+      pesticide_free:false,
+    },
+    'delivery': {
+      'free_shipping': false,
+      'same_day_shipping': false,
+    },
+    // 'detail': {},
+  }
+  const [params, setParams] = React.useState(initalParams)
 
   const methods = useForm({
     // mode: 'onBlur',
@@ -142,8 +153,8 @@ const Search = (props)=> {
       const response = await Fetch.get('/api/categories/depth/')
 
       setCategories(response);
-      setParameter({
-        ...parameter,
+      setParams({
+        ...params,
         'categories' : response.reduce((acc, cur) => (
           [...acc, ...cur.sub_categories]
         ), []).reduce((acc,cur)=>(
@@ -156,12 +167,12 @@ const Search = (props)=> {
   },[])
 
   React.useEffect(() => {
-    // very first (parameter initalize) order1
-    if (Object.keys(parameter.categories).length===0){
+    // very first (params initalize) order1
+    if (Object.keys(params.categories).length===0){
       return ;
     }
     fetchProducts() 
-  }, [parameter]);
+  }, [params]);
 
   const handleSearch = (address) => async () => {
     if (address===''){
@@ -176,20 +187,23 @@ const Search = (props)=> {
   }
 
   const makeQuery = (init=false)=>{
-    // after setting parameter order2
+    // after setting params order2
     if (isFirstRun.current || !naverMapRef.current){
       isFirstRun.current = false
       return defaultQuery
     }
 
-    const categoryIds = Object.keys(parameter.categories).filter(key => parameter.categories[key] === true).join(',')
-    const categoryQuery = categoryIds?`category__in=${categoryIds}&`:''
+    const categoryIds = Object.keys(params.categories).filter(key => params.categories[key] === true).join(',')
+    const categoryQuery = categoryIds?`category__in=${categoryIds}`:''
 
     const {_ne, _sw} = naverMapRef.current.getBounds()
     // const geoQuery = (naverMapRef.current===null)?`lat__lte=40.9511095&lng__lte=130.1039986&lat__gte=34.0210658&lng__gte=&$123.8527778`:`lat__lte=${_ne._lat}&lng__lte=${_ne._lng}&lat__gte=${_sw._lat}&lng__gte=&${_sw._lng}`
     const geoQuery = `lat__lte=${_ne._lat}&lng__lte=${_ne._lng}&lat__gte=${_sw._lat}&lng__gte=&${_sw._lng}`
 
-    return `?${categoryQuery}${geoQuery}`
+    const envFitQuery = Object.keys(params.envFit).filter(key => params.envFit[key] === true).map(key=>key+'=true').join('&')
+    const deliveryQuery = Object.keys(params.delivery).filter(key => params.delivery[key] === true).map(key=>key+'=true').join('&')
+
+    return '?'+ [categoryQuery, geoQuery, envFitQuery, deliveryQuery].join('&')
   }
 
   const fetchProducts = ()=>{
@@ -205,13 +219,18 @@ const Search = (props)=> {
   }
 
   const handleChangeParemeter = (group, key, value)=>{
-    setParameter({
-      ...parameter,
+    setParams({
+      ...params,
       [group]: {
-        ...parameter[group],
+        ...params[group],
         [key]: value,
       }
     })
+  }
+
+  const handleReset = ()=>{
+    methods.setValue('address', '')
+    setParams(initalParams)
   }
 
   const handleIdle = ()=>{
@@ -227,7 +246,7 @@ const Search = (props)=> {
       />
 
       <FormProvider {...methods} >
-        <SearchBar handleSearch={handleSearch} categories={categories} fetchProducts={fetchProducts} {...{parameter, handleChangeParemeter}} />
+        <SearchBar handleSearch={handleSearch} categories={categories} fetchProducts={fetchProducts} {...{params, handleChangeParemeter, handleReset}} />
       </FormProvider>
 
       <Grid className={classes.container} container>

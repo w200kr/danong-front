@@ -119,6 +119,10 @@ const searchStyle = theme => {
     contentImage:{
       width: '100%',
     },
+    faqs:{
+      marginTop: 40,
+      borderTop: '1px',
+    },
     reviews: {
       paddingTop: 50,
       paddingBottom: 50,

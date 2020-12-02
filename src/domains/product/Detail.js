@@ -5,7 +5,12 @@ import { useForm } from "react-hook-form";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import {Box, Container, Grid, Input, InputBase, InputAdornment, ButtonBase, Button, IconButton, List, ListItem, ListItemText, Avatar, Link, Paper, Typography, Divider, TextField, Menu, MenuItem, Popover, Popper, ClickAwayListener} from '@material-ui/core';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+
 import { Apps, CloudDownload } from "@material-ui/icons";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SearchIcon from '@material-ui/icons/Search';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -298,10 +303,10 @@ const Detail = (props)=> {
             <ListItemText primary={<Link href='#productDetail' underline='none' style={{color:'white'}}>상품상세</Link>} />
           </ListItem>
           <ListItem>
-            <ListItemText primary={<Link href='#reviews' underline='none' style={{color:'white'}}>상품평</Link>} />
+            <ListItemText primary={<Link href='#faq' underline='none' style={{color:'white'}}>자주하는 질문</Link>} />
           </ListItem>
           <ListItem>
-            <ListItemText primary={<Link href='#qna' underline='none' style={{color:'white'}}>상품 QnA</Link>} />
+            <ListItemText primary={<Link href='#reviews' underline='none' style={{color:'white'}}>상품평</Link>} />
           </ListItem>
         </List>
       </Box>
@@ -331,8 +336,10 @@ const Detail = (props)=> {
                 </Typography>
               </Box>
               <Box display='flex' justifyContent='space-evenly' width='100%' mb={3}>
-                <Button className={classes.roundButton} variant="outlined" fullWidth>Tel. {product.seller_profile?.tel}</Button>
-                <Button className={classes.roundButton} variant="outlined" fullWidth>1:1 문의</Button>
+                <Button component='a' href={'tel:'+product.seller_profile?.tel} className={classes.roundButton} variant="outlined" fullWidth>Tel. {product.seller_profile?.tel}</Button>
+                <Button className={classes.roundButton} variant="outlined" fullWidth onClick={()=>{
+                  window.open(product.CS_contact,'_blank');
+                }}>1:1 문의</Button>
               </Box>
               <Typography variant='button'>
                 다농 등록건수 : {product.seller_profile?.product_num}건
@@ -357,6 +364,25 @@ const Detail = (props)=> {
               <img key={index} className={classes.contentImage} src={image.image_url} alt={`content ${index}`} />
             ))}
           </Grid>
+        </Grid>
+        <Grid id='faq' className={classes.faqs} item xs={12}>
+          {product.faqs?<Typography variant='h4' align='center' style={{marginBottom:20}}>자주하는 질문</Typography>:''}
+          {product.faqs?.map((faq, index)=>(
+            <Accordion key={index}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                // aria-controls="panel2a-content"
+                // id="panel2a-header"
+              >
+                <Typography className={classes.heading}>{faq.question}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography>
+                  {faq.answer}
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          ))}
         </Grid>
         <Grid id="reviews" className={classes.reviews} item xs={12}>
           {product.reviews?product.reviews.map(review=>{
@@ -431,7 +457,6 @@ const Detail = (props)=> {
               </Button>
             </Box>
           ):''}
-
         </Grid>
       </Container>
       <Footer />

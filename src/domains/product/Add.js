@@ -53,10 +53,13 @@ export default (props)=>{
   const defaultImages = [defaultImage,]
   const defaultOption = {volumn:'', price:''}
   const defaultOptions = [defaultOption,]
+  const defaultFaq = {question:'', answer:''}
+  const defaultFaqs = [defaultFaq,]
 
   const defaultValues = {
     images: defaultImages,
     options: defaultOptions,
+    faqs: defaultFaqs,
   };
 
   const { register, handleSubmit, errors, control, watch, reset, setValue } = useForm({
@@ -116,6 +119,7 @@ export default (props)=>{
 
   const handleResetImages = ()=>setValue('images', defaultImages)
   const handleResetOptions = ()=>setValue('options', defaultOptions)
+  const handleResetFaqs = ()=>setValue('faqs', defaultFaqs)
 
   // const NamedImageField = ({name, ...rest})=>(
   const renderImageField = (name)=>(
@@ -144,7 +148,7 @@ export default (props)=>{
         const formData = new FormData()
 
         Object.keys(data).map(key=>{
-          if (key==='thumbnail'||key==='images'||key==='options')
+          if (key==='thumbnail'||key==='images'||key==='options'||key==='faqs')
             return;
           formData.append(key, data[key])
         })
@@ -157,6 +161,9 @@ export default (props)=>{
         const options = data.options.filter(option=>(
           option.volumn!==''&&option.price!==''
         ))
+        const faqs = data.faqs.filter(option=>(
+          option.question!==''&&option.answer!==''
+        ))
 
         images.map(image=>{
           formData.append('images[]', image.image[0])
@@ -166,6 +173,7 @@ export default (props)=>{
           return image
         })))
         formData.set("options", JSON.stringify(options))
+        formData.set("faqs", JSON.stringify(faqs))
 
         Fetch.post('/api/products/', formData).then(res=>{
           // console.log(res)
@@ -306,6 +314,21 @@ export default (props)=>{
               />
               <FormTextField 
                 {...makeFieldProps({
+                  name: 'CS_contact',
+                  label: '1대1 상담 url',
+                  errorText: 'http로 시작하는 상담 url을 입력하세요',
+                  extraControllerProps:{
+                    rules:{
+                      required: true,
+                      validate: {
+                        startWithHttp: value => value.startsWith('http'),
+                      }
+                    }
+                  }
+                })}
+              />
+              <FormTextField 
+                {...makeFieldProps({
                   name: 'description',
                   label: '상품 설명',
                   extraFieldProps: {
@@ -317,6 +340,9 @@ export default (props)=>{
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+              <Typography>
+                상품 이미지
+              </Typography>
               <FieldArray 
                 {...{
                   parentName: 'images', 
@@ -358,6 +384,9 @@ export default (props)=>{
                 ]}
               />
 
+              <Typography>
+                상품 옵션
+              </Typography>
               <FieldArray 
                 {...{
                   parentName: 'options', 
@@ -408,6 +437,54 @@ export default (props)=>{
                   },
                 ]}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography>
+                자주하는 질문
+              </Typography>
+              <FieldArray 
+                {...{
+                  parentName: 'faqs', 
+                  handleReset: handleResetFaqs,
+                  control}}
+                parentFields={[
+                  {
+                    gridProps:{
+                      xs: 5,
+                    },
+                    render:({parentIndex, row})=>(
+                      <FormTextField 
+                        {...makeFieldProps({
+                          name: `faqs[${parentIndex}].question`,
+                          label: '질문',
+                          extraFieldProps: {
+                            error: errors.faqs?.[parentIndex]?.question&&true,
+                          }
+                        })}
+                      />
+                    )
+                  },
+                  {
+                    gridProps:{
+                      xs: true,
+                    },
+                    render:({parentIndex, row})=>(
+                      <FormTextField 
+                        {...makeFieldProps({
+                          name: `faqs[${parentIndex}].answer`,
+                          label: '답변',
+                          extraFieldProps: {
+                            error: errors.faqs?.[parentIndex]?.answer&&true,
+                          }
+                        })}
+                      />
+                    )
+                  },
+                ]}
+              />
+            </Grid>
+            <Grid item xs={12}>
+
             </Grid>
           </Grid>
 
