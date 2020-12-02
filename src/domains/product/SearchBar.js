@@ -163,7 +163,7 @@ export default function SearchBar(props) {
             <ToggleButton 
               {...makeToggleButtonProps('delivery')}
             >
-              배송{makeEndIcon(openPanels['delivery'])}
+              거래방식{makeEndIcon(openPanels['delivery'])}
             </ToggleButton>
             <IconButton type="reset" className={classes.iconButton} aria-label="search" onClick={handleReset}>
               <RefreshIcon />
@@ -329,7 +329,7 @@ export default function SearchBar(props) {
             }}>
               <FormControlLabel 
                 control={<Checkbox />}
-                label='무료 배송'
+                label='택배배송'
                 checked={params.delivery['free_shipping']}
                 onClick={e=>{
                   e.preventDefault()
@@ -338,7 +338,7 @@ export default function SearchBar(props) {
               />
               <FormControlLabel 
                 control={<Checkbox />}
-                label='즉시 발송'
+                label='직거래'
                 checked={params.delivery['same_day_shipping']}
                 onClick={e=>{
                   e.preventDefault()
