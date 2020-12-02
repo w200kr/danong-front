@@ -106,30 +106,22 @@ export default function ProductCard(props) {
                 paddingBottom: 3,
               }}
             >
-              <Grid 
-                container
-              >
-                <Grid 
-                  item 
-                  xs={12} 
-                  container 
-                  justify="space-between"
-                  alignItems="center"
-                >
-                    <Typography variant='subtitle2' align='left'>{product.name}</Typography>
-                    <Typography variant='subtitle2' align='right'>{product.price}원</Typography>
-                </Grid>
-                <Grid 
-                  item 
-                  xs={12} 
-                  container 
-                  justify="space-between"
-                  alignItems="center"
-                >
-                    <Typography variant='caption' align='left'>{product.address}</Typography>
-                    <Typography variant='caption' align='right'>{product.view_count}회</Typography>
-                </Grid>
-              </Grid>
+              <Box mt={0.6} display='flex' style={{minHeight:42}}>
+                <Box flexGrow={1}>
+                  <Typography variant='subtitle2'>{product.name}</Typography>
+                </Box>
+                <Box>
+                  <Typography variant='subtitle2' noWrap>{product.price}원</Typography>
+                </Box>
+              </Box>
+              <Box display='flex'>
+                <Box flexGrow={1}>
+                  <Typography variant='caption' align='left'>{product.address}</Typography>
+                </Box>
+                <Box>
+                  <Typography variant='caption' align='right'>{product.view_count}회</Typography>
+                </Box>
+              </Box>
             </Box>
           }
           subheader={
